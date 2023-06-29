@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AuthService from 'services/auth.service';
+import { setMessage } from './message';
 
 const user = JSON.parse(localStorage.getItem('auth-user'));
 // initial state

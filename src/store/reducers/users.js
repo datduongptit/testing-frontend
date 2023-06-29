@@ -1,14 +1,21 @@
+/* eslint-disable no-unused-vars */
 import { createSlice } from '@reduxjs/toolkit';
+import UserService from 'services/user.service';
 
-const initialState = {};
+const initialState = {
+  listUsers: null,
+  currentUserInfo: null
+};
 
 const users = createSlice({
   name: 'users',
   initialState,
   reducers: {
     setListUsers: (state, action) => {
-      // const response =
-      return { message: action.payload };
+      state.listUsers = action.payload.data;
+    },
+    setCurrenUserInfo: (state, action) => {
+      state.currentUserInfo = action.payload.data;
     },
     clearMessage: () => {
       return { message: '' };
@@ -18,4 +25,4 @@ const users = createSlice({
 
 export default users.reducer;
 
-export const { setListUsers, clearMessage } = users.actions;
+export const { setListUsers, setCurrenUserInfo, clearMessage } = users.actions;

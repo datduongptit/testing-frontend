@@ -1,17 +1,21 @@
 import axios from 'axios';
+// import { store } from 'store/index';
 
-const API_URL = 'http://localhost:3000/api/test/';
+const API_URL = 'http://localhost:4000/user/';
+const authUser = JSON.parse(localStorage.getItem('auth-user'));
 
-const getPublicContent = () => {
-  return axios.get(API_URL + 'all');
+axios.defaults.headers.common['Authorization'] = `Bearer ${authUser?.token}`;
+
+const getAllUsers = () => {
+  return axios.get(API_URL + 'listUsers');
 };
 
-const getUserBoard = () => {
-  return axios.get(API_URL + 'user');
+const getUserInfo = (id) => {
+  return axios.get(API_URL + `user-info/${id}`);
 };
 
-const getModeratorBoard = () => {
-  return axios.get(API_URL + 'mod');
+const createAccount = ({ username, email, password, role }) => {
+  return axios.post(API_URL + 'signup', { username, email, password, role });
 };
 
 const getAdminBoard = () => {
@@ -19,9 +23,9 @@ const getAdminBoard = () => {
 };
 
 const UserService = {
-  getPublicContent,
-  getUserBoard,
-  getModeratorBoard,
+  getAllUsers,
+  getUserInfo,
+  createAccount,
   getAdminBoard
 };
 

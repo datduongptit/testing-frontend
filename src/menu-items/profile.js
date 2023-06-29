@@ -15,9 +15,9 @@ const profile = {
   children: [
     {
       id: 'dashboard',
-      title: 'Profile',
+      title: 'Project',
       type: 'item',
-      url: '/profile',
+      url: '/project',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     },

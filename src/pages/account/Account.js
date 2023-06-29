@@ -1,11 +1,28 @@
+/* eslint-disable no-unused-vars */
 import { Typography, Grid } from '@mui/material';
 import MainCard from 'components/MainCard';
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import UserService from 'services/user.service';
+import { setListUsers } from 'store/reducers/users';
+import ListAccount from './ListAccount';
 
 const Account = () => {
+  const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
+  const {
+    users: { listUsers }
+  } = useSelector((state) => state);
+
+  useEffect(() => {
+    const getListUsers = async () => {
+      const response = await UserService.getAllUsers();
+      dispatch(setListUsers({ data: response.data?.result }));
+    };
+    getListUsers();
+  }, [dispatch]);
+
   if (!currentUser) {
     return <Navigate to="/login" />;
   }
@@ -29,6 +46,14 @@ const Account = () => {
             </Typography>
           </MainCard>
         </Grid>
+        {/* List users */}
+        {listUsers && (
+          <>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              <ListAccount users={listUsers} />
+            </Grid>
+          </>
+        )}
       </Grid>
     </>
   );

@@ -3,8 +3,10 @@ import { lazy } from 'react';
 // project import
 import Loadable from 'components/Loadable';
 import MainLayout from 'layout/MainLayout';
-import Profile from 'pages/profile/index';
 import Account from 'pages/account/Account';
+import AccountDetail from 'pages/account/AccountDetail';
+import Project from 'pages/project/index';
+import ProjectDetails from 'pages/project/ProjectDetails';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
@@ -58,12 +60,20 @@ const MainRoutes = {
       element: <AntIcons />
     },
     {
-      path: 'profile',
-      element: <Profile />
+      path: 'project',
+      element: <Project />
+    },
+    {
+      path: 'project/:id',
+      element: <ProjectDetails />
     },
     {
       path: 'account',
       element: <Account />
+    },
+    {
+      path: 'account/:id',
+      element: <AccountDetail />
     }
   ]
 };

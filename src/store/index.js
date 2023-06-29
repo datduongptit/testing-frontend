@@ -1,5 +1,5 @@
 // third-party
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 
 // project import
 import reducers from './reducers';
@@ -7,7 +7,10 @@ import reducers from './reducers';
 // ==============================|| REDUX TOOLKIT - MAIN STORE ||============================== //
 
 const store = configureStore({
-  reducer: reducers
+  reducer: reducers,
+  middleware: getDefaultMiddleware({
+    serializableCheck: false
+  })
 });
 
 const { dispatch } = store;

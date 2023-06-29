@@ -23,10 +23,10 @@ const dashboard = {
       breadcrumbs: false
     },
     {
-      id: 'profile',
-      title: 'Profile',
+      id: 'project',
+      title: 'Project',
       type: 'item',
-      url: '/profile',
+      url: '/project',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     },
