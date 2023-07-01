@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Grid, Typography, Breadcrumbs, Link } from '@mui/material';
+import { useLocation, Link } from 'react-router-dom';
+import { Grid, Typography, Breadcrumbs } from '@mui/material';
 import MainCard from 'components/MainCard';
 import ProjectService from 'services/project.service';
 import { dispatch } from 'store/index';
@@ -40,9 +40,7 @@ const ProjectDetails = () => {
         <Grid item xs={12} sx={{ mb: -2.25 }}>
           <div style={{ marginBottom: '1rem' }}>
             <Breadcrumbs aria-label="breadcrumb">
-              <Link underline="hover" color="inherit" href="/project">
-                Project
-              </Link>
+              <Link to="/project">Project</Link>
               <Typography color="text.primary">Project details</Typography>
             </Breadcrumbs>
           </div>

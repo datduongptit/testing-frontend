@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react';
+import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { TableContainer, Typography, Stack, Table, TableRow, Paper, TableCell, TableHead, TableBody, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -30,6 +32,7 @@ const ListAccount = ({ users }) => {
               <TableCell align="left">Username</TableCell>
               <TableCell align="left">Email</TableCell>
               <TableCell align="left">Role</TableCell>
+              <TableCell align="left">Created at</TableCell>
               <TableCell align="left">Action</TableCell>
             </TableRow>
           </TableHead>
@@ -41,6 +44,7 @@ const ListAccount = ({ users }) => {
                 </TableCell>
                 <TableCell align="left">{user.email}</TableCell>
                 <TableCell align="left">{user.role}</TableCell>
+                <TableCell align="left">{moment(user.createdAt).format('YYYY-MM-DD HH:mm')}</TableCell>
                 <TableCell align="left">
                   <Stack direction="row" spacing={2}>
                     <Button

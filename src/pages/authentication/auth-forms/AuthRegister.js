@@ -27,6 +27,8 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import UserService from 'services/user.service';
+import { dispatch } from 'store/index';
+import { setNewUserToList } from 'store/reducers/users';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
@@ -47,9 +49,14 @@ const AuthRegister = ({ handleClose }) => {
   };
 
   const handleCreateAccount = async (user) => {
-    const res = await UserService.createAccount(user);
-    if (res) {
-      console.log(res);
+    try {
+      const res = await UserService.createAccount(user);
+      if (res) {
+        dispatch(setNewUserToList({ data: res.data.result }));
+        handleClose();
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -100,6 +107,7 @@ const AuthRegister = ({ handleClose }) => {
                     onChange={handleChange}
                     placeholder="John"
                     fullWidth
+                    autoComplete="off"
                     error={Boolean(touched.username && errors.username)}
                   />
                   {touched.username && errors.username && (

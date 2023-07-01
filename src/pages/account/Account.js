@@ -16,12 +16,18 @@ const Account = () => {
   } = useSelector((state) => state);
 
   useEffect(() => {
-    const getListUsers = async () => {
-      const response = await UserService.getAllUsers();
-      dispatch(setListUsers({ data: response.data?.result }));
-    };
-    getListUsers();
-  }, [dispatch]);
+    try {
+      const getListUsers = async () => {
+        const response = await UserService.getAllUsers();
+        dispatch(setListUsers({ data: response.data?.result }));
+      };
+      if (currentUser) {
+        getListUsers();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dispatch, currentUser]);
 
   if (!currentUser) {
     return <Navigate to="/login" />;

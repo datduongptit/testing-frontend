@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/project/';
 const authUser = JSON.parse(localStorage.getItem('auth-user'));
-const userId = authUser.sub;
+const userId = authUser?.sub;
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${authUser?.token}`;
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // project import
 import pages from './pages';
 import dashboard from './dashboard';
@@ -8,7 +9,7 @@ import logout from './logout';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, pages, utilities, support, logout]
+  items: [dashboard, logout]
 };
 
 export default menuItems;

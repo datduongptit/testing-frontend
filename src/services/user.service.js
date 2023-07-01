@@ -11,7 +11,11 @@ const getAllUsers = () => {
 };
 
 const getUserInfo = (id) => {
-  return axios.get(API_URL + `user-info/${id}`);
+  try {
+    return axios.get(API_URL + `user-info/${id}`);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const createAccount = ({ username, email, password, role }) => {

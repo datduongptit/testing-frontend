@@ -14,6 +14,9 @@ const users = createSlice({
     setListUsers: (state, action) => {
       state.listUsers = action.payload.data;
     },
+    setNewUserToList: (state, action) => {
+      state.listUsers = [...state.listUsers, action.payload.data];
+    },
     setCurrenUserInfo: (state, action) => {
       state.currentUserInfo = action.payload.data;
     },
@@ -25,4 +28,4 @@ const users = createSlice({
 
 export default users.reducer;
 
-export const { setListUsers, setCurrenUserInfo, clearMessage } = users.actions;
+export const { setListUsers, setCurrenUserInfo, clearMessage, setNewUserToList } = users.actions;
