@@ -1,22 +1,37 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { TableContainer, Stack, Typography, Table, TableRow, Paper, TableCell, TableHead, TableBody, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddUserAssign from './AddUserAssign';
 import { useSelector } from 'react-redux';
+import { dispatch } from 'store/index';
+import { deteteUsersAssigned } from 'store/reducers/projects';
+import ProjectService from 'services/project.service';
 // import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 const ListUsersAssign = ({ project }) => {
-  let usersAssigned = project?.usersAssigned;
-  usersAssigned = usersAssigned ? JSON.parse(usersAssigned) : [];
+  const usersAssigned = project?.usersAssigned;
   const {
-    users: { listUsers }
+    users: { listUsers },
+    projects: { currentProject }
   } = useSelector((state) => state);
+
+  const handleDeleteUserAssigned = async (id) => {
+    const dataSubmit = { ...currentProject };
+    dataSubmit.usersAssigned = JSON.stringify(dataSubmit.usersAssigned);
+    const res = await ProjectService.updateProject({ data: dataSubmit });
+    if (res) {
+      console.log(res);
+    }
+    dispatch(deteteUsersAssigned(id));
+  };
+
   return (
     <div>
       <div style={{ marginBottom: '1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h5">Tester assigned</Typography>
-        {listUsers && <AddUserAssign listUsers={listUsers} usersAssigned={usersAssigned} />}
+        {listUsers && usersAssigned && <AddUserAssign listUsers={listUsers} usersAssigned={usersAssigned} />}
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -48,7 +63,7 @@ const ListUsersAssign = ({ project }) => {
                     >
                       Edit
                     </Button> */}
-                    <Button variant="outlined" color="error" startIcon={<DeleteIcon />}>
+                    <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDeleteUserAssigned(user?.id)}>
                       Delete
                     </Button>
                   </Stack>

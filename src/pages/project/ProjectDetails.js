@@ -8,8 +8,8 @@ import { dispatch } from 'store/index';
 import { setCurrentProject } from 'store/reducers/projects';
 import { useSelector } from 'react-redux';
 import ListUsersAssign from './ListUsersAssign';
-import UserService from 'services/user.service';
 import { setListUsers } from 'store/reducers/users';
+import UserService from 'services/user.service';
 
 const ProjectDetails = () => {
   const { pathname } = useLocation();
@@ -17,21 +17,26 @@ const ProjectDetails = () => {
   const {
     projects: { currentProject: project }
   } = useSelector((state) => state);
-  const getProjectById = async () => {
-    const res = await ProjectService.getProjectById(projectId);
-    if (res) {
-      dispatch(setCurrentProject({ data: res.data.result }));
-    }
-  };
 
   const getListUsers = async () => {
     const response = await UserService.getAllUsers();
     dispatch(setListUsers({ data: response.data?.result }));
   };
 
+  const getProjectById = async () => {
+    const res = await ProjectService.getProjectById(projectId);
+    if (res) {
+      const projectResult = res.data.result;
+      let usersAssigned = projectResult?.usersAssigned;
+      usersAssigned = typeof usersAssigned === 'string' ? JSON.parse(usersAssigned) : usersAssigned;
+      projectResult.usersAssigned = usersAssigned;
+      dispatch(setCurrentProject({ data: projectResult }));
+    }
+  };
+
   useEffect(() => {
-    getProjectById();
     getListUsers();
+    getProjectById();
   }, []);
 
   return (

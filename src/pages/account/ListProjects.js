@@ -1,12 +1,28 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TableContainer, Stack, Table, TableRow, Paper, TableCell, TableHead, TableBody, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import ProjectService from 'services/project.service';
+import { dispatch } from 'store/index';
+import { deleteProject } from 'store/reducers/projects';
+import DeleteModal from 'components/modal/DeleteModal';
 
 const ListProjects = ({ projects }) => {
   const navigate = useNavigate();
+  const handleDeleteProject = async (id) => {
+    try {
+      const response = await ProjectService.deleteProjectById(id);
+      if (response?.data?.result?.affected) {
+        dispatch(deleteProject(id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <TableContainer component={Paper}>
@@ -41,9 +57,15 @@ const ListProjects = ({ projects }) => {
                     >
                       Edit
                     </Button>
-                    <Button variant="outlined" color="error" startIcon={<DeleteIcon />}>
+                    {/* <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => handleDeleteProject(project?.projectId)}
+                    >
                       Delete
-                    </Button>
+                    </Button> */}
+                    <DeleteModal deleteAction={handleDeleteProject} id={project?.projectId} />
                   </Stack>
                 </TableCell>
               </TableRow>

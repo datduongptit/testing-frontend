@@ -6,6 +6,9 @@ import { Grid, Typography } from '@mui/material';
 import { setListProjects } from 'store/reducers/projects';
 import ListProjects from 'pages/account/ListProjects';
 import { useSelector } from 'react-redux';
+import ProjectForm from './ProjectForm';
+import { setListUsers } from 'store/reducers/users';
+import UserService from 'services/user.service';
 
 const Project = ({ userId }) => {
   const {
@@ -19,14 +22,23 @@ const Project = ({ userId }) => {
     }
   };
 
+  const getListUsers = async () => {
+    const response = await UserService.getAllUsers();
+    dispatch(setListUsers({ data: response.data?.result }));
+  };
+
   useEffect(() => {
     getListProjectByUserId();
+    getListUsers();
   }, []);
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       <Grid item xs={12} sx={{ mb: -2.25 }}>
-        <Typography variant="h5">List projects</Typography>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="h5">List projects</Typography>
+          <ProjectForm />
+        </div>
       </Grid>
       <Grid item xs={12} sx={{ mb: -2.25 }}>
         <ListProjects projects={projects} />

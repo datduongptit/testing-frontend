@@ -19,15 +19,31 @@ const getProjectById = (id) => {
   return axios.get(API_URL + `${id}`);
 };
 
-const getAdminBoard = () => {
-  return axios.get(API_URL + 'admin');
+const createProject = (data) => {
+  return axios.post(API_URL + `create`, data);
+};
+
+const deleteProjectById = (id) => {
+  return axios.post(API_URL + `delete`, { projectId: id });
+};
+
+const updateProject = ({ data }) => {
+  console.log({ ...data });
+  return axios.post(API_URL + 'update', { ...data });
+};
+
+const updateProjectAssigned = (data) => {
+  return axios.post(API_URL + 'update', { ...data });
 };
 
 const ProjectService = {
   getAllProject,
   getProjectByUserId,
   getProjectById,
-  getAdminBoard
+  createProject,
+  deleteProjectById,
+  updateProject,
+  updateProjectAssigned
 };
 
 export default ProjectService;

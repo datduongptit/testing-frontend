@@ -4,6 +4,8 @@ import { useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { Modal, Box, Typography, OutlinedInput, InputLabel, MenuItem, FormControl, Select, Chip, Button } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ProjectService from 'services/project.service';
+import { useSelector } from 'react-redux';
 
 const style = {
   position: 'absolute',
@@ -39,6 +41,10 @@ const AddUserAssign = ({ listUsers, usersAssigned }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const {
+    projects: { currentProject }
+  } = useSelector((state) => state);
+
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
   const filteredUsers = listUsers.filter((user) => !usersAssigned.some((assignedUser) => assignedUser.id === user.id));
@@ -55,8 +61,14 @@ const AddUserAssign = ({ listUsers, usersAssigned }) => {
   const convertIdToUsername = (id) => listUsers.filter((user) => user.id === id)[0].username;
 
   const handleAddUser = async () => {
+    const projectUpdate = { ...currentProject };
     const listUserAssigned = usersAssigned.map((item) => item.id);
     const listSubmit = listUserAssigned.concat(personName);
+    projectUpdate.usersAssigned = JSON.stringify(listSubmit);
+    const res = await ProjectService.updateProject({ data: projectUpdate });
+    if (res) {
+      console.log(res);
+    }
     handleClose();
   };
 
