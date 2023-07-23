@@ -6,6 +6,10 @@ import { Modal, Box, Typography, OutlinedInput, InputLabel, MenuItem, FormContro
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ProjectService from 'services/project.service';
 import { useSelector } from 'react-redux';
+import { addUsersAssign } from 'store/reducers/projects';
+import { dispatch } from 'store/index';
+import { setMessage } from 'store/reducers/message';
+import AlertMessage from 'components/AlertMessage';
 
 const style = {
   position: 'absolute',
@@ -42,8 +46,10 @@ const AddUserAssign = ({ listUsers, usersAssigned }) => {
   const handleClose = () => setOpen(false);
 
   const {
-    projects: { currentProject }
+    projects: { currentProject },
+    auth: { user }
   } = useSelector((state) => state);
+  const role = user?.role;
 
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
@@ -64,19 +70,24 @@ const AddUserAssign = ({ listUsers, usersAssigned }) => {
     const projectUpdate = { ...currentProject };
     const listUserAssigned = usersAssigned.map((item) => item.id);
     const listSubmit = listUserAssigned.concat(personName);
-    projectUpdate.usersAssigned = JSON.stringify(listSubmit);
-    const res = await ProjectService.updateProject({ data: projectUpdate });
+    const listUsersAssignFull = listUsers.filter((user) => listSubmit.includes(user.id));
+    projectUpdate.usersAssigned = listSubmit;
+    const res = await ProjectService.addUsersAssign({ data: projectUpdate });
     if (res) {
-      console.log(res);
+      dispatch(addUsersAssign(listUsersAssignFull));
+      dispatch(setMessage('Add successfully'));
     }
     handleClose();
   };
 
   return (
     <div>
-      <Button variant="contained" startIcon={<AddCircleIcon />} onClick={handleOpen}>
-        Add user assignment
-      </Button>
+      {role === 'admin' && (
+        <Button variant="contained" startIcon={<AddCircleIcon />} onClick={handleOpen}>
+          Add user assignment
+        </Button>
+      )}
+
       <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
           <div>
@@ -124,6 +135,7 @@ const AddUserAssign = ({ listUsers, usersAssigned }) => {
           </div>
         </Box>
       </Modal>
+      <AlertMessage />
     </div>
   );
 };

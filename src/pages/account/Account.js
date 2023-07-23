@@ -9,25 +9,8 @@ import { setListUsers } from 'store/reducers/users';
 import ListAccount from './ListAccount';
 
 const Account = () => {
-  const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
-  const {
-    users: { listUsers }
-  } = useSelector((state) => state);
-
-  useEffect(() => {
-    try {
-      const getListUsers = async () => {
-        const response = await UserService.getAllUsers();
-        dispatch(setListUsers({ data: response.data?.result }));
-      };
-      if (currentUser) {
-        getListUsers();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [dispatch, currentUser]);
+  const role = currentUser?.role;
 
   if (!currentUser) {
     return <Navigate to="/login" />;
@@ -53,10 +36,10 @@ const Account = () => {
           </MainCard>
         </Grid>
         {/* List users */}
-        {listUsers && (
+        {role === 'admin' && (
           <>
             <Grid item xs={12} sm={12} md={12} lg={12}>
-              <ListAccount users={listUsers} />
+              <ListAccount />
             </Grid>
           </>
         )}

@@ -14,17 +14,17 @@ const ListUsersAssign = ({ project }) => {
   const usersAssigned = project?.usersAssigned;
   const {
     users: { listUsers },
+    auth: { user },
     projects: { currentProject }
   } = useSelector((state) => state);
 
+  const role = user?.role;
+
   const handleDeleteUserAssigned = async (id) => {
-    const dataSubmit = { ...currentProject };
-    dataSubmit.usersAssigned = JSON.stringify(dataSubmit.usersAssigned);
-    const res = await ProjectService.updateProject({ data: dataSubmit });
+    const res = await ProjectService.deleteProjectUserAssigned({ data: currentProject, id });
     if (res) {
-      console.log(res);
+      dispatch(deteteUsersAssigned(id));
     }
-    dispatch(deteteUsersAssigned(id));
   };
 
   return (
@@ -40,7 +40,7 @@ const ListUsersAssign = ({ project }) => {
               <TableCell align="left">Username</TableCell>
               <TableCell align="left">Email</TableCell>
               <TableCell align="left">Role</TableCell>
-              <TableCell align="left">Actions</TableCell>
+              {role === 'admin' && <TableCell align="left">Actions</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -51,23 +51,20 @@ const ListUsersAssign = ({ project }) => {
                 </TableCell>
                 <TableCell align="left">{user?.email}</TableCell>
                 <TableCell align="left">{user?.role}</TableCell>
-                <TableCell align="left">
-                  <Stack direction="row" spacing={2}>
-                    {/* <Button
-                      variant="outlined"
-                      startIcon={<ModeEditIcon />}
-                      onClick={() => {
-                        // getAccountInfo(project?.id);
-                        // navigate(`/project/${project?.projectId}`);
-                      }}
-                    >
-                      Edit
-                    </Button> */}
-                    <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDeleteUserAssigned(user?.id)}>
-                      Delete
-                    </Button>
-                  </Stack>
-                </TableCell>
+                {role === 'admin' && (
+                  <TableCell align="left">
+                    <Stack direction="row" spacing={2}>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                        onClick={() => handleDeleteUserAssigned(user?.id)}
+                      >
+                        Remove
+                      </Button>
+                    </Stack>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

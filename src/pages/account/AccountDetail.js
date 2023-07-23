@@ -32,7 +32,7 @@ const AccountDetail = () => {
   const getListProjectByUserId = async () => {
     const res = await ProjectService.getProjectByUserId(userId);
     if (res) {
-      dispatch(setListProjects({ data: res.data.result }));
+      dispatch(setListProjects({ data: res.data.result.listUsersAssigned, total: res.data.result.total }));
     }
   };
 

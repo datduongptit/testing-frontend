@@ -1,6 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {};
+const initialState = {
+  message: '',
+  active: false,
+  type: 'success',
+  vertical: 'bottom',
+  horizontal: 'center'
+};
 
 const message = createSlice({
   name: 'message',
@@ -8,10 +14,12 @@ const message = createSlice({
   reducers: {
     setMessage: (state, action) => {
       // const res = await
-      return { message: action.payload };
+      state.active = true;
+      state.message = action.payload;
     },
-    clearMessage: () => {
-      return { message: '' };
+    clearMessage: (state) => {
+      state.message = '';
+      state.active = false;
     }
   }
 });

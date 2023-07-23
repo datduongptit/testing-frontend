@@ -11,8 +11,8 @@ const getAllProject = () => {
   return axios.get(API_URL + 'all');
 };
 
-const getProjectByUserId = (id) => {
-  return axios.get(API_URL + `user/${id || userId}`);
+const getProjectByUserId = (id, query) => {
+  return axios.get(API_URL + `user/${id || userId}`, { params: query });
 };
 
 const getProjectById = (id) => {
@@ -28,8 +28,26 @@ const deleteProjectById = (id) => {
 };
 
 const updateProject = ({ data }) => {
-  console.log({ ...data });
-  return axios.post(API_URL + 'update', { ...data });
+  const dataProjectUpdate = { ...data };
+  const usersAssignedUpdate = [...dataProjectUpdate.usersAssigned];
+  dataProjectUpdate.usersAssigned = JSON.stringify(usersAssignedUpdate);
+  return axios.post(API_URL + 'update', { ...dataProjectUpdate });
+};
+
+const addUsersAssign = ({ data }) => {
+  const dataProjectUpdate = { ...data };
+  const usersAssignedUpdate = [...dataProjectUpdate.usersAssigned];
+  dataProjectUpdate.usersAssigned = JSON.stringify(usersAssignedUpdate);
+  return axios.post(API_URL + 'update', { ...dataProjectUpdate });
+};
+
+const deleteProjectUserAssigned = ({ data, id }) => {
+  const dataProjectUpdate = { ...data };
+  let usersAssignedUpdate = [...dataProjectUpdate.usersAssigned];
+  usersAssignedUpdate = usersAssignedUpdate.filter((user) => user.id !== id);
+  usersAssignedUpdate = usersAssignedUpdate.map((user) => user.id);
+  dataProjectUpdate.usersAssigned = JSON.stringify(usersAssignedUpdate);
+  return axios.post(API_URL + 'update', { ...dataProjectUpdate });
 };
 
 const updateProjectAssigned = (data) => {
@@ -43,6 +61,8 @@ const ProjectService = {
   createProject,
   deleteProjectById,
   updateProject,
+  addUsersAssign,
+  deleteProjectUserAssigned,
   updateProjectAssigned
 };
 

@@ -33,6 +33,8 @@ import avatar1 from 'assets/images/users/avatar-1.png';
 import avatar2 from 'assets/images/users/avatar-2.png';
 import avatar3 from 'assets/images/users/avatar-3.png';
 import avatar4 from 'assets/images/users/avatar-4.png';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 // avatar style
 const avatarSX = {
@@ -70,9 +72,13 @@ const status = [
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 const DashboardDefault = () => {
+  const { user: currentUser } = useSelector((state) => state.auth);
   const [value, setValue] = useState('today');
   const [slot, setSlot] = useState('week');
 
+  if (!currentUser) {
+    return <Navigate to="/login" />;
+  }
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       {/* row 1 */}

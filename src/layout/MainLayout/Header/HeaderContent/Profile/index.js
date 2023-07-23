@@ -27,10 +27,9 @@ import ProfileTab from './ProfileTab';
 import SettingTab from './SettingTab';
 
 // assets
-import avatar1 from 'assets/images/users/avatar-1.png';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { logout } from 'store/reducers/auth';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -54,10 +53,40 @@ function a11yProps(index) {
   };
 }
 
+function stringToColor(string) {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = '#';
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+function stringAvatar(name) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name)
+    },
+    children: `${name.split(' ')[0]}`
+  };
+}
+
 // ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 const Profile = () => {
   const theme = useTheme();
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
@@ -101,8 +130,8 @@ const Profile = () => {
         onClick={handleToggle}
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">John Doe</Typography>
+          <Avatar alt="profile user" sx={{ width: 32, height: 32 }} {...stringAvatar(user?.username?.charAt(0) ?? '')} />
+          <Typography variant="subtitle1">{user?.username}</Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -143,11 +172,11 @@ const Profile = () => {
                       <Grid container justifyContent="space-between" alignItems="center">
                         <Grid item>
                           <Stack direction="row" spacing={1.25} alignItems="center">
-                            <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                            <Avatar alt="profile user" sx={{ width: 32, height: 32 }} {...stringAvatar(user?.username?.charAt(0) ?? '')} />
                             <Stack>
-                              <Typography variant="h6">John Doe</Typography>
+                              <Typography variant="h6">{user?.username}</Typography>
                               <Typography variant="body2" color="textSecondary">
-                                UI/UX Designer
+                                {user?.role === 'user' ? 'Tester' : 'Manager'}
                               </Typography>
                             </Stack>
                           </Stack>
@@ -190,11 +219,11 @@ const Profile = () => {
                           </Tabs>
                         </Box>
                         <TabPanel value={value} index={0} dir={theme.direction}>
-                          <ProfileTab handleLogout={handleLogout} />
+                          <ProfileTab handleLogout={handleLogout} userId={user?.sub} />
                         </TabPanel>
-                        <TabPanel value={value} index={1} dir={theme.direction}>
+                        {/* <TabPanel value={value} index={1} dir={theme.direction}>
                           <SettingTab />
-                        </TabPanel>
+                        </TabPanel> */}
                       </>
                     )}
                   </MainCard>

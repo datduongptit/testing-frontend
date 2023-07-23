@@ -36,9 +36,11 @@ function getStyles(name, personName, theme) {
 
 const ProjectForm = () => {
   const {
-    users: { listUsers: users }
+    users: { listUsers: users },
+    auth: { user }
   } = useSelector((state) => state);
   const theme = useTheme();
+  const role = user?.role;
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -78,9 +80,12 @@ const ProjectForm = () => {
 
   return (
     <>
-      <Button variant="contained" startIcon={<AddCircleIcon />} onClick={handleOpen}>
-        Add project
-      </Button>
+      {role === 'admin' && (
+        <Button variant="contained" startIcon={<AddCircleIcon />} onClick={handleOpen}>
+          Add project
+        </Button>
+      )}
+
       <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box>
           <AuthWrapper>

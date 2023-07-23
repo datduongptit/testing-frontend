@@ -17,7 +17,7 @@ function PaperComponent(props) {
   );
 }
 
-const DeleteModal = ({ deleteAction, id }) => {
+const DeleteModal = ({ deleteAction, id, url }) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -47,7 +47,7 @@ const DeleteModal = ({ deleteAction, id }) => {
         <DialogActions>
           <Button
             onClick={() => {
-              deleteAction(id);
+              deleteAction(id, url);
               handleClose();
             }}
             color="error"

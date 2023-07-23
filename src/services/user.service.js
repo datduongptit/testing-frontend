@@ -6,8 +6,12 @@ const authUser = JSON.parse(localStorage.getItem('auth-user'));
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${authUser?.token}`;
 
-const getAllUsers = () => {
-  return axios.get(API_URL + 'listUsers');
+const getAllUsers = (query) => {
+  try {
+    return axios.get(API_URL + 'listUsers', { params: query });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const getUserInfo = (id) => {
