@@ -27,10 +27,10 @@ const deleteProjectById = (id) => {
   return axios.post(API_URL + `delete`, { projectId: id });
 };
 
-const updateProject = ({ data }) => {
+const updateProjectDetail = (data) => {
   const dataProjectUpdate = { ...data };
-  const usersAssignedUpdate = [...dataProjectUpdate.usersAssigned];
-  dataProjectUpdate.usersAssigned = JSON.stringify(usersAssignedUpdate);
+  // const usersAssignedUpdate = [...dataProjectUpdate.usersAssigned];
+  // dataProjectUpdate.usersAssigned = JSON.stringify(usersAssignedUpdate);
   return axios.post(API_URL + 'update', { ...dataProjectUpdate });
 };
 
@@ -60,7 +60,7 @@ const ProjectService = {
   getProjectById,
   createProject,
   deleteProjectById,
-  updateProject,
+  updateProjectDetail,
   addUsersAssign,
   deleteProjectUserAssigned,
   updateProjectAssigned

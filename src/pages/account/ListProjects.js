@@ -27,7 +27,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import _debounce from 'lodash/debounce';
 
-const ListProjects = ({ userId }) => {
+const ListProjects = ({ userId, type }) => {
   const navigate = useNavigate();
   const {
     projects: { listProjects: projects, total }
@@ -121,7 +121,7 @@ const ListProjects = ({ userId }) => {
                         startIcon={<ModeEditIcon />}
                         onClick={() => {
                           // getAccountInfo(project?.id);
-                          navigate(`/project/${project?.projectId}`);
+                          navigate(`/${type === 'report' ? 'report' : 'project'}/${project?.projectId}`);
                         }}
                       >
                         Edit

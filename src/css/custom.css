@@ -1,3 +1,12 @@
 .project-list-report .MuiPaper-root {
   box-shadow: none !important;
 }
+
+.project-card-detail .MuiCardContent-root {
+  position: relative;
+}
+
+.project-card-detail .project-edit {
+  position: absolute;
+  right: 10px;
+}

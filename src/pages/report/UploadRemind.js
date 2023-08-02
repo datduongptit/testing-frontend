@@ -8,7 +8,7 @@ import FileService from 'services/file.service';
 import { dispatch } from 'store/index';
 import { uploadFile } from 'store/reducers/projects';
 
-const UploadRemind = ({ project, type }) => {
+const UploadRemind = ({ project, type, disabled }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const handleFileChange = async (e) => {
@@ -32,6 +32,7 @@ const UploadRemind = ({ project, type }) => {
           color="primary"
           component="label"
           startIcon={<FileUploadIcon />}
+          disabled={disabled}
           //   onClick={() => {
           //     handleClickOpen();
           //   }}

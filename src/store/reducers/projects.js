@@ -22,6 +22,9 @@ const projects = createSlice({
     updateProject: (state, action) => {
       state.listProjects = [action.payload.data, ...state.listProjects];
     },
+    updateCurrentProject: (state, action) => {
+      state.currentProject = action.payload.data;
+    },
     addUsersAssign: (state, action) => {
       state.currentProject.usersAssigned = action.payload;
     },
@@ -65,5 +68,6 @@ export const {
   addUsersAssign,
   deleteFileById,
   uploadFile,
+  updateCurrentProject,
   clearMessage
 } = projects.actions;

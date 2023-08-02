@@ -37,6 +37,14 @@ const dashboard = {
       url: '/account',
       icon: icons.UserOutlined,
       breadcrumbs: false
+    },
+    {
+      id: 'report',
+      title: 'Report',
+      type: 'item',
+      url: '/report',
+      icon: icons.UserOutlined,
+      breadcrumbs: false
     }
   ]
 };

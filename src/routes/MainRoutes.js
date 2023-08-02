@@ -7,6 +7,7 @@ import Account from 'pages/account/Account';
 import AccountDetail from 'pages/account/AccountDetail';
 import Project from 'pages/project/index';
 import ProjectDetails from 'pages/project/ProjectDetails';
+// import ReportDetails from 'pages/report/ReportDetails';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
@@ -61,7 +62,7 @@ const MainRoutes = {
     },
     {
       path: 'project',
-      element: <Project />
+      element: <Project type="project" />
     },
     {
       path: 'project/:id',
@@ -74,6 +75,14 @@ const MainRoutes = {
     {
       path: 'account/:id',
       element: <AccountDetail />
+    },
+    {
+      path: 'report',
+      element: <Project type="report" />
+    },
+    {
+      path: 'report/:id',
+      element: <ProjectDetails />
     }
   ]
 };

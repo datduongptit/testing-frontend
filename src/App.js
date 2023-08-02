@@ -8,6 +8,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import './css/custom.css';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 

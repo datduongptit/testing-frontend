@@ -31,12 +31,14 @@ const PlanRemind = ({ project, type }) => {
     }
   };
 
+  const isDisabledUpload = type === 'REPORT' && files.length;
+
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <Typography variant="h5">List file</Typography>
+        <Typography variant="h5">{type === 'REPORT' ? 'Report' : 'List file'}</Typography>
         {/* <AddNewAccount /> */}
-        <UploadRemind project={project} type={type} />
+        <UploadRemind project={project} type={type} disabled={isDisabledUpload} />
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
