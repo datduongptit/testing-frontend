@@ -8,6 +8,7 @@ import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack, Modal, 
 
 // third party
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import LoadingButton from '@mui/lab/LoadingButton';
 import EditIcon from '@mui/icons-material/Edit';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -19,6 +20,7 @@ import ProjectService from 'services/project.service';
 import { updateCurrentProject, updateProject } from 'store/reducers/projects';
 import { dispatch } from 'store/index';
 import UploadProjectFile from './UploadProjectFile';
+import FileService from 'services/file.service';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -50,7 +52,8 @@ const ProjectForm = ({ type }) => {
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  const [loading, setLoading] = useState(false);
 
   const [personName, setPersonName] = React.useState(userAssignEdit || []);
   const handleChangeUsers = (event) => {
@@ -81,14 +84,31 @@ const ProjectForm = ({ type }) => {
         }
       : editFormProject;
 
-  const [files, setFiles] = useState({ plan: null, require: null });
+  const projectFiles = project?.files?.filter((file) => file.fileType === 'PROJECT_PLAN' || file.fileType === 'PROJECT_REQUIRE');
+
+  const [files, setFiles] = useState({ PROJECT_PLAN: null, PROJECT_REQUIRE: null });
   const handleChangeFiles = (type, file) => {
     setFiles({ ...files, [type]: file });
   };
 
+  const resetForm = () => {
+    if (type === 'create') {
+      setFiles({ PROJECT_PLAN: null, PROJECT_REQUIRE: null });
+      setPersonName([]);
+      setUserReport('');
+    }
+  };
+
+  const handleClose = () => {
+    resetForm();
+    setOpen(false);
+  };
+
   const handleCreateProject = async (data) => {
     try {
-      const dataUpdate = { ...data, projectId: project.projectId };
+      setLoading(true);
+      const dataUpdate = { ...data };
+      if (type !== 'create') dataUpdate.projectId = project.projectId;
       const res = type === 'create' ? await ProjectService.createProject(data) : await ProjectService.updateProjectDetail(dataUpdate);
       if (res) {
         const dataResponse = res.data.result;
@@ -98,10 +118,32 @@ const ProjectForm = ({ type }) => {
         } else {
           dispatch(updateCurrentProject({ data: dataResponse }));
         }
+        await handleUploadFiles(dataResponse);
+        setLoading(false);
+        resetForm();
         handleClose();
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleUploadFiles = async (projectId) => {
+    const filePlan = projectFiles?.find((item) => item.fileType === 'PROJECT_PLAN');
+    const fileRequire = projectFiles?.find((item) => item.fileType === 'PROJECT_REQUIRE');
+    if (files.PROJECT_PLAN) {
+      if (filePlan) {
+        await FileService.updateFile(files.PROJECT_PLAN, filePlan.id, projectId, 'PROJECT_PLAN');
+      } else {
+        await FileService.uploadFile(files.PROJECT_PLAN, projectId, 'PROJECT_PLAN');
+      }
+    }
+    if (files.PROJECT_REQUIRE) {
+      if (fileRequire) {
+        await FileService.updateFile(files.PROJECT_REQUIRE, fileRequire.id, projectId, 'PROJECT_REQUIRE');
+      } else {
+        await FileService.uploadFile(files.PROJECT_REQUIRE, projectId, 'PROJECT_REQUIRE');
+      }
     }
   };
 
@@ -262,12 +304,22 @@ const ProjectForm = ({ type }) => {
                         )}
                       </Stack>
                     </Grid>
-                    {/* <Grid item xs={6}>
-                      <UploadProjectFile files={files} handleChangeFiles={handleChangeFiles} type="plan" />
+                    <Grid item xs={6}>
+                      <UploadProjectFile
+                        files={files}
+                        handleChangeFiles={handleChangeFiles}
+                        type="PROJECT_PLAN"
+                        projectFiles={projectFiles}
+                      />
                     </Grid>
                     <Grid item xs={6}>
-                      <UploadProjectFile files={files} handleChangeFiles={handleChangeFiles} type="require" />
-                    </Grid> */}
+                      <UploadProjectFile
+                        files={files}
+                        handleChangeFiles={handleChangeFiles}
+                        type="PROJECT_REQUIRE"
+                        projectFiles={projectFiles}
+                      />
+                    </Grid>
 
                     {/* end */}
                     {errors.submit && (
@@ -277,7 +329,7 @@ const ProjectForm = ({ type }) => {
                     )}
                     <Grid item xs={12}>
                       <AnimateButton>
-                        <Button
+                        <LoadingButton
                           disableElevation
                           disabled={isSubmitting}
                           fullWidth
@@ -285,9 +337,10 @@ const ProjectForm = ({ type }) => {
                           type="submit"
                           variant="contained"
                           color="primary"
+                          loading={loading}
                         >
-                          Create
-                        </Button>
+                          {type === 'create' ? 'Create' : 'Update'}
+                        </LoadingButton>
                       </AnimateButton>
                     </Grid>
                     <Grid item xs={12}>

@@ -14,6 +14,7 @@ import UploadFile from './UploadFile';
 import matchUser from 'utils/matchUser';
 import { useSelector } from 'react-redux';
 import { CustomNoRowsOverlay } from 'components/CustomEmptyOverlayGrid';
+import UploadReportModal from './UploadReportModal';
 
 const ReportTable = ({ project, type }) => {
   const {
@@ -36,6 +37,7 @@ const ReportTable = ({ project, type }) => {
         <Typography variant="h5">List file</Typography>
         {/* <AddNewAccount /> */}
         <UploadFile project={project} type={type} />
+        <UploadReportModal />
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

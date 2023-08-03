@@ -13,7 +13,6 @@ import { setListUsers } from 'store/reducers/users';
 import UserService from 'services/user.service';
 import PlanRemind from 'pages/report/PlanRemind';
 import ListReport from 'pages/report/ListReport';
-import Report from 'pages/report/Report';
 import matchUser from 'utils/matchUser';
 import ProjectForm from './ProjectForm';
 
@@ -33,6 +32,16 @@ const ProjectDetails = () => {
     } catch (error) {
       console.log('error');
     }
+  };
+
+  const getLinkFile = (type) => {
+    const fileUpload = project?.files?.find((item) => item.fileType === type);
+    return fileUpload ? fileUpload.baseUrl + fileUpload.url : '';
+  };
+
+  const getFileName = (type) => {
+    const fileUpload = project?.files?.find((item) => item.fileType === type);
+    return fileUpload ? fileUpload.fileName : '';
   };
 
   const getProjectById = async () => {
@@ -84,6 +93,12 @@ const ProjectDetails = () => {
               </Typography>
               <Typography variant="h6" gutterBottom>
                 User report: {matchUser(listUsers, project.userReport)}
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Project plan: <a href={getLinkFile('PROJECT_PLAN')}>{getFileName('PROJECT_PLAN')}</a>
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Project remind: <a href={getLinkFile('PROJECT_REQUIRE')}>{getFileName('PROJECT_REQUIRE')}</a>
               </Typography>
             </MainCard>
           </Grid>
