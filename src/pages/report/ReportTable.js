@@ -15,6 +15,7 @@ import matchUser from 'utils/matchUser';
 import { useSelector } from 'react-redux';
 import { CustomNoRowsOverlay } from 'components/CustomEmptyOverlayGrid';
 import UploadReportModal from './UploadReportModal';
+import FormExcute from './FormExcute';
 
 const ReportTable = ({ project, type }) => {
   const {
@@ -66,7 +67,8 @@ const ReportTable = ({ project, type }) => {
                         <DownloadIcon />
                       </IconButton>
                       {isHasToDelete(file?.userUpload) && <DeleteModal deleteAction={handleDeleteFile} id={file?.id} url={file?.url} />}
-                      <UploadReportModal type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />
+                      {type === 'TEST_CASE' && <UploadReportModal type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />}
+                      {type === 'EXCUTE_TEST' && <FormExcute type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />}
                     </Stack>
                   </TableCell>
                 </TableRow>

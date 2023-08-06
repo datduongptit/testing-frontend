@@ -29,6 +29,7 @@ const ListFuntion = ({ files }) => {
             <TableCell align="right">Test case</TableCell>
             <TableCell align="right">Environment</TableCell>
             <TableCell align="right">Description</TableCell>
+            <TableCell align="right">Passed rate</TableCell>
             <TableCell align="right">Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -42,6 +43,7 @@ const ListFuntion = ({ files }) => {
               <TableCell align="right">{row.testcase}</TableCell>
               <TableCell align="right">{row.env}</TableCell>
               <TableCell align="right">{row.description}</TableCell>
+              <TableCell align="right">{((row.casePassed / row.testcase) * 100).toFixed(2)}</TableCell>
               <TableCell align="right">
                 {/* <Stack direction="row" spacing={1}> */}
                 <UpdateFunction func={row} fileId={row.id} reportFiles={reportFiles} />
