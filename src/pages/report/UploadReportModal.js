@@ -37,8 +37,8 @@ function getStyles(name, personName, theme) {
   };
 }
 
-const UploadReportModal = ({ type }) => {
-  const [open, setOpen] = React.useState(true);
+const UploadReportModal = ({ type, fileId, listFunction }) => {
+  const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [file, setFile] = useState();
@@ -49,30 +49,44 @@ const UploadReportModal = ({ type }) => {
     customer: ''
     // userReport: ''
   };
-  const [functions, setFunctions] = useState([]);
+  const [functions, setFunctions] = useState(listFunction || []);
 
-  const addFunction = () => setFunctions([...functions, { name: '', description: '', priority: 'medium', env: '', testcase: '' }]);
+  const addFunction = () =>
+    setFunctions([...functions, { name: '', description: '', priority: 'medium', env: 'development', testcase: '' }]);
   const handleChangeFunction = (index, key, value) => {
     const updateFuntions = [...functions];
     updateFuntions[index][key] = value;
+    updateFuntions[index].id = fileId;
     setFunctions(updateFuntions);
+  };
+
+  const handleUpdateFuntions = async () => {
+    // const dataSubmit = [...functions]
+    const res = await FileService.updateFunctions(fileId, functions);
+    console.log(res);
   };
 
   return (
     <>
       <Button variant="contained" startIcon={type === 'create' ? <AddCircleIcon /> : <EditIcon />} onClick={handleOpen}>
-        Upload
+        Edit
       </Button>
 
-      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+      <Modal
+        className="modal-add-project"
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
         <Box>
           <AuthWrapper>
             <Formik
               initialValues={initialValues}
               validationSchema={Yup.object().shape({
-                name: Yup.string().max(255).required('Project name is required'),
-                manager: Yup.string().max(255).required('Project manager is required'),
-                customer: Yup.string().max(255).required('Customer is required')
+                // name: Yup.string().max(255).required('Project name is required'),
+                // manager: Yup.string().max(255).required('Project manager is required'),
+                // customer: Yup.string().max(255).required('Customer is required')
                 // userReport: Yup.string().max(255).required('User report is required')
               })}
               onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -80,8 +94,10 @@ const UploadReportModal = ({ type }) => {
                   //   values.usersAssigned = JSON.stringify(personName);
                   //   values.userReport = userReport;
                   //   handleCreateProject(values);
+                  handleUpdateFuntions();
                   setStatus({ success: false });
                   setSubmitting(false);
+                  handleClose();
                 } catch (err) {
                   setStatus({ success: false });
                   setErrors({ submit: err.message });
@@ -94,27 +110,6 @@ const UploadReportModal = ({ type }) => {
                 <form noValidate onSubmit={handleSubmit}>
                   <Grid container spacing={3}>
                     <Grid item xs={12}>
-                      <Stack spacing={1}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          component="label"
-                          startIcon={<FileUploadIcon />}
-                          // disabled={disabled}
-                          //   onClick={() => {
-                          //     handleClickOpen();
-                          //   }}
-                        >
-                          <label htmlFor={'button-upload' + type}>Upload file</label>
-                          <input id={'button-upload' + type} type="file" hidden={true} onChange={(e) => setFile(e.target.files[0])} />
-                        </Button>
-                        <div style={{ marginTop: '1rem' }}>{file?.name}</div>
-                        {/* <a style={{ marginTop: '1rem' }} href={getLinkFile()}>
-                      {projectFiles?.find((item) => item.fileType === type)?.fileName}
-                    </a> */}
-                      </Stack>
-                    </Grid>
-                    <Grid item xs={12}>
                       <Button variant="contained" startIcon={type === 'create' ? <AddCircleIcon /> : <EditIcon />} onClick={addFunction}>
                         Add function
                       </Button>
@@ -123,35 +118,35 @@ const UploadReportModal = ({ type }) => {
                       <>
                         <Grid item xs={6}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor="manager-project">Name</InputLabel>
+                            <InputLabel htmlFor={`manager-project-name-${index}`}>Name</InputLabel>
                             <OutlinedInput
-                              id="manager-project"
+                              id={`manager-project-name-${index}`}
                               type="text"
-                              value={values.manager}
+                              value={item.name}
                               name="manager"
                               onBlur={handleBlur}
-                              onChange={handleChange}
+                              onChange={(e) => handleChangeFunction(index, 'name', e.target.value)}
                               placeholder="Enter function name"
                               fullWidth
                               error={Boolean(touched.manager && errors.manager)}
                             />
-                            {touched.manager && errors.manager && (
+                            {/* {touched.manager && errors.manager && (
                               <FormHelperText error id="standard-weight-helper-text-project-manager">
                                 {errors.manager}
                               </FormHelperText>
-                            )}
+                            )} */}
                           </Stack>
                         </Grid>
                         <Grid item xs={6}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor="manager-project">Test case</InputLabel>
+                            <InputLabel htmlFor={`manager-project-testcase-${index}`}>Test case</InputLabel>
                             <OutlinedInput
-                              id="manager-project"
+                              id={`manager-project-testcase-${index}`}
                               type="number"
-                              value={values.manager}
+                              value={item.testcase}
                               name="manager"
                               onBlur={handleBlur}
-                              onChange={handleChange}
+                              onChange={(e) => handleChangeFunction(index, 'testcase', e.target.value)}
                               placeholder="Enter number of test case"
                               fullWidth
                               error={Boolean(touched.manager && errors.manager)}
@@ -165,12 +160,12 @@ const UploadReportModal = ({ type }) => {
                         </Grid>
                         <Grid item xs={6}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor="usersAssigned-project">User report</InputLabel>
+                            <InputLabel htmlFor="usersAssigned-project">Priority</InputLabel>
                             <Select
                               labelId="demo-simple-select-label-priority"
                               id="demo-simple-select-priority"
-                              //   value={userReport}
-                              //   onChange={(e) => setUserReport(e.target.value)}
+                              value={item.priority}
+                              onChange={(e) => handleChangeFunction(index, 'testcase', e.target.value)}
                             >
                               {[
                                 { label: 'High', value: 'hight' },
@@ -190,11 +185,12 @@ const UploadReportModal = ({ type }) => {
                             <Select
                               labelId="demo-simple-select-label-env"
                               id="demo-simple-select-env"
-                              //   value={userReport}
-                              //   onChange={(e) => setUserReport(e.target.value)}
+                              value={item.env}
+                              onChange={(e) => handleChangeFunction(index, 'env', e.target.value)}
                             >
                               {[
                                 { label: 'Development', value: 'development' },
+                                { label: 'Staging', value: 'staging' },
                                 { label: 'Production', value: 'production' }
                               ].map((item, index) => (
                                 <MenuItem key={index} value={item.value} style={getStyles(item?.label, [], theme)}>
@@ -210,10 +206,10 @@ const UploadReportModal = ({ type }) => {
                             <OutlinedInput
                               id="manager-project"
                               type="text"
-                              value={values.manager}
+                              value={item.description}
                               name="manager"
                               onBlur={handleBlur}
-                              onChange={handleChange}
+                              onChange={(e) => handleChangeFunction(index, 'description', e.target.value)}
                               placeholder=""
                               fullWidth
                             />
@@ -221,6 +217,28 @@ const UploadReportModal = ({ type }) => {
                         </Grid>
                       </>
                     ))}
+
+                    <Grid item xs={12}>
+                      <AnimateButton>
+                        <LoadingButton
+                          disableElevation
+                          disabled={isSubmitting}
+                          fullWidth
+                          size="large"
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                          // loading={loading}
+                        >
+                          {type === 'create' ? 'Create' : 'Update'}
+                        </LoadingButton>
+                      </AnimateButton>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button variant="outlined" fullWidth size="large" type="submit" onClick={handleClose}>
+                        Cancel
+                      </Button>
+                    </Grid>
                   </Grid>
                 </form>
               )}

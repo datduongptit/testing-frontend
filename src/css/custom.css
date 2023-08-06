@@ -10,3 +10,8 @@
   position: absolute;
   right: 10px;
 }
+
+.modal-add-project .MuiBox-root {
+  overflow-y: scroll;
+  max-height: 100vh;
+}

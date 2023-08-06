@@ -37,7 +37,7 @@ const ReportTable = ({ project, type }) => {
         <Typography variant="h5">List file</Typography>
         {/* <AddNewAccount /> */}
         <UploadFile project={project} type={type} />
-        <UploadReportModal />
+        {/* <UploadReportModal /> */}
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -66,6 +66,7 @@ const ReportTable = ({ project, type }) => {
                         <DownloadIcon />
                       </IconButton>
                       {isHasToDelete(file?.userUpload) && <DeleteModal deleteAction={handleDeleteFile} id={file?.id} url={file?.url} />}
+                      <UploadReportModal type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />
                     </Stack>
                   </TableCell>
                 </TableRow>

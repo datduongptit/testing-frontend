@@ -15,6 +15,7 @@ import PlanRemind from 'pages/report/PlanRemind';
 import ListReport from 'pages/report/ListReport';
 import matchUser from 'utils/matchUser';
 import ProjectForm from './ProjectForm';
+import ListFuntion from 'pages/report/ListFunction';
 
 const ProjectDetails = () => {
   const { pathname } = useLocation();
@@ -117,9 +118,14 @@ const ProjectDetails = () => {
               </Grid>
             </>
           ) : (
-            <Grid item xs={12} sm={12} md={12} lg={12}>
-              <PlanRemind project={project} type="REPORT" index={6} />
-            </Grid>
+            <>
+              <Grid item xs={12} sm={12} md={12} lg={12}>
+                <PlanRemind project={project} type="REPORT" index={6} />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12} lg={12}>
+                <ListFuntion files={project?.files} />
+              </Grid>
+            </>
           )}
         </Grid>
       </>

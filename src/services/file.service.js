@@ -39,6 +39,18 @@ const updateFile = (file, fileId, project, type) => {
   }
 };
 
+const updateFunctions = (fileId, functions) => {
+  try {
+    console.log(fileId);
+    return axios.post(API_URL + `update/function`, {
+      id: fileId,
+      functions: JSON.stringify(functions)
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const deleteFileById = (id, url) => {
   console.log(url);
   try {
@@ -52,6 +64,7 @@ const FileService = {
   getAllUsers,
   uploadFile,
   updateFile,
+  updateFunctions,
   deleteFileById
 };
 
