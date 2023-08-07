@@ -66,8 +66,11 @@ const ReportTable = ({ project, type }) => {
                       <IconButton color="primary" aria-label="add to shopping cart" onClick={() => window.open(file.baseUrl + file.url)}>
                         <DownloadIcon />
                       </IconButton>
+                      {type === 'TEST_CASE' && console.log(123, file)}
                       {isHasToDelete(file?.userUpload) && <DeleteModal deleteAction={handleDeleteFile} id={file?.id} url={file?.url} />}
-                      {type === 'TEST_CASE' && <UploadReportModal type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />}
+                      {type === 'TEST_CASE' && (
+                        <UploadReportModal type={type} fileId={file.id} listFunction={JSON.parse(file?.functions)} />
+                      )}
                       {type === 'EXCUTE_TEST' && <FormExcute type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />}
                     </Stack>
                   </TableCell>

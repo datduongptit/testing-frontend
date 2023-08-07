@@ -55,7 +55,7 @@ const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
   };
 
   const [excute, setExcute] = useState(
-    listFuntion
+    listFuntion && JSON.stringify(listFuntion) !== '[]'
       ? listFuntion
       : {
           excuter: '',
@@ -65,7 +65,7 @@ const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
   );
   const addFailedCase = () => {
     const failedCase = [...excute.failed];
-    failedCase.push({ devAssign: '', errorCode: '', time: '', timeDone: '' });
+    failedCase.push({ caseName: '', devAssign: '', errorCode: '', time: '', timeDone: '' });
     setExcute({ ...excute, failed: [...failedCase] });
   };
 
@@ -182,7 +182,18 @@ const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
                     {excute.failed?.map((item, index) => (
                       <>
                         <Grid item xs={12}>
-                          <p>Case {index + 1}</p>
+                          <Stack spacing={1}>
+                            <InputLabel htmlFor={`manager-project-casename-${index}`}>Name</InputLabel>
+                            <OutlinedInput
+                              id={`manager-project-casename-${index}`}
+                              type="text"
+                              value={item.caseName}
+                              onBlur={handleBlur}
+                              onChange={(e) => handleChangeExcuteFailed(index, 'caseName', e.target.value)}
+                              placeholder="Enter name of test case"
+                              fullWidth
+                            />
+                          </Stack>
                         </Grid>
                         <Grid item xs={6}>
                           <Stack spacing={1}>
