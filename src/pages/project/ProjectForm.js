@@ -78,6 +78,8 @@ const ProjectForm = ({ type }) => {
     endAt: moment(project?.endAt).format('YYYY-MM-DD')
   };
 
+  const [status, setStatus] = useState(project?.status || 'PLANNING');
+
   const initialValues =
     type === 'create'
       ? {
@@ -262,7 +264,30 @@ const ProjectForm = ({ type }) => {
                       </Stack>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="status-project">Status</InputLabel>
+                        <Select
+                          labelId="status-project"
+                          id="status-project-select"
+                          value={status}
+                          onChange={(e) => setStatus(e.target.value)}
+                        >
+                          {['PLANNING', 'OPEN', 'CLOSE'].map((item, index) => (
+                            <MenuItem key={index} value={item} style={getStyles(item, status, theme)}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {touched.usersAssigned && errors.usersAssigned && (
+                          <FormHelperText error id="standard-weight-helper-text-project-usersAssigned">
+                            {errors.usersAssigned}
+                          </FormHelperText>
+                        )}
+                      </Stack>
+                    </Grid>
+
+                    <Grid item xs={6}>
                       <Stack spacing={1}>
                         <InputLabel htmlFor="usersAssigned-project">Assign user</InputLabel>
                         <Select
