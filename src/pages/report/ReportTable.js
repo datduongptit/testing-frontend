@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { CustomNoRowsOverlay } from 'components/CustomEmptyOverlayGrid';
 import UploadReportModal from './UploadReportModal';
 import FormExcute from './FormExcute';
+import FormReview from './FormReview';
 
 const ReportTable = ({ project, type }) => {
   const {
@@ -72,6 +73,7 @@ const ReportTable = ({ project, type }) => {
                         <UploadReportModal type={type} fileId={file.id} listFunction={JSON.parse(file?.functions)} />
                       )}
                       {type === 'EXCUTE_TEST' && <FormExcute type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />}
+                      {type === 'TEST_REVIEW' && <FormReview type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />}
                     </Stack>
                   </TableCell>
                 </TableRow>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
-
+import moment from 'moment';
 // material-ui
 import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack, Modal, Box, Select, Chip, MenuItem } from '@mui/material';
 
@@ -47,6 +47,7 @@ const ProjectForm = ({ type }) => {
   } = useSelector((state) => state);
   const userAssignEdit = project?.usersAssigned?.map((user) => user?.id);
   const userReportEdit = project?.userReport;
+  const userReviewEdit = project?.userReview;
   const theme = useTheme();
   const role = user?.role;
 
@@ -66,12 +67,15 @@ const ProjectForm = ({ type }) => {
     );
   };
   const [userReport, setUserReport] = useState(userReportEdit || '');
+  const [userReview, setUserReview] = useState(userReviewEdit || '');
   const convertIdToUsername = (id) => users.filter((user) => user.id === id)[0].username;
 
   const editFormProject = {
     name: project?.name,
     manager: project?.manager,
-    customer: project?.customer
+    customer: project?.customer,
+    startedAt: moment(project?.startedAt).format('YYYY-MM-DD'),
+    endAt: moment(project?.endAt).format('YYYY-MM-DD')
   };
 
   const initialValues =
@@ -79,10 +83,14 @@ const ProjectForm = ({ type }) => {
       ? {
           name: '',
           manager: '',
-          customer: ''
+          customer: '',
+          startedAt: '',
+          endAt: ''
           // userReport: ''
         }
       : editFormProject;
+
+  console.log(initialValues);
 
   const projectFiles = project?.files?.filter((file) => file.fileType === 'PROJECT_PLAN' || file.fileType === 'PROJECT_REQUIRE');
 
@@ -96,6 +104,7 @@ const ProjectForm = ({ type }) => {
       setFiles({ PROJECT_PLAN: null, PROJECT_REQUIRE: null });
       setPersonName([]);
       setUserReport('');
+      setUserReview('');
     }
   };
 
@@ -164,12 +173,16 @@ const ProjectForm = ({ type }) => {
                 name: Yup.string().max(255).required('Project name is required'),
                 manager: Yup.string().max(255).required('Project manager is required'),
                 customer: Yup.string().max(255).required('Customer is required')
+                // startedAt: Yup.date().min(Yup.ref('originalStartDate'), ({ min }) => `Date needs to be before ${formatDate(min)}!!`),
+                // endAt: Yup.date().min(Yup.ref('originalEndDate'), ({ min }) => `Date needs to be before ${formatDate(min)}!!`)
                 // userReport: Yup.string().max(255).required('User report is required')
               })}
               onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                 try {
+                  console.log(values);
                   values.usersAssigned = JSON.stringify(personName);
                   values.userReport = userReport;
+                  values.userReview = userReview;
                   handleCreateProject(values);
                   setStatus({ success: false });
                   setSubmitting(false);
@@ -282,7 +295,7 @@ const ProjectForm = ({ type }) => {
                       </Stack>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
                       <Stack spacing={1}>
                         <InputLabel htmlFor="usersAssigned-project">User report</InputLabel>
                         <Select
@@ -302,6 +315,57 @@ const ProjectForm = ({ type }) => {
                             {errors.usersAssigned}
                           </FormHelperText>
                         )}
+                      </Stack>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="usersAssigned-project">User review</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={userReview}
+                          onChange={(e) => setUserReview(e.target.value)}
+                        >
+                          {users.map((user, index) => (
+                            <MenuItem key={index} value={user?.id} style={getStyles(user?.username, personName, theme)}>
+                              {user?.username}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {touched.usersAssigned && errors.usersAssigned && (
+                          <FormHelperText error id="standard-weight-helper-text-project-usersAssigned">
+                            {errors.usersAssigned}
+                          </FormHelperText>
+                        )}
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor={`startedAt`}>Time start</InputLabel>
+                        <OutlinedInput
+                          id={`startedAt`}
+                          type="date"
+                          value={values.startedAt}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          placeholder="Enter number of test case"
+                          fullWidth
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor={`endAt`}>Time done</InputLabel>
+                        <OutlinedInput
+                          id={`endAt`}
+                          type="date"
+                          value={values.endAt}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          placeholder="Enter number of test case"
+                          fullWidth
+                        />
                       </Stack>
                     </Grid>
                     <Grid item xs={6}>

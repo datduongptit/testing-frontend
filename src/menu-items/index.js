@@ -9,7 +9,7 @@ import logout from './logout';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, logout]
+  items: [dashboard]
 };
 
 export default menuItems;

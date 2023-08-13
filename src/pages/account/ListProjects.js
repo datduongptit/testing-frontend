@@ -25,6 +25,7 @@ import DeleteModal from 'components/modal/DeleteModal';
 import { useSelector } from 'react-redux';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import _debounce from 'lodash/debounce';
 
 const ListProjects = ({ userId, type }) => {
@@ -118,22 +119,14 @@ const ListProjects = ({ userId, type }) => {
                     <Stack direction="row" spacing={2}>
                       <Button
                         variant="outlined"
-                        startIcon={<ModeEditIcon />}
+                        startIcon={<RemoveRedEyeIcon />}
                         onClick={() => {
                           // getAccountInfo(project?.id);
                           navigate(`/${type === 'report' ? 'report' : 'project'}/${project?.projectId}`);
                         }}
                       >
-                        Edit
+                        View
                       </Button>
-                      {/* <Button
-                      variant="outlined"
-                      color="error"
-                      startIcon={<DeleteIcon />}
-                      onClick={() => handleDeleteProject(project?.projectId)}
-                    >
-                      Delete
-                    </Button> */}
                       <DeleteModal deleteAction={handleDeleteProject} id={project?.projectId} />
                     </Stack>
                   </TableCell>

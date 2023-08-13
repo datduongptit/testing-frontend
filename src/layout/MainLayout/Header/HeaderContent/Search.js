@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // material-ui
 import { Box, FormControl, InputAdornment, OutlinedInput } from '@mui/material';
 
@@ -8,7 +9,7 @@ import { SearchOutlined } from '@ant-design/icons';
 
 const Search = () => (
   <Box sx={{ width: '100%', ml: { xs: 0, md: 1 } }}>
-    <FormControl sx={{ width: { xs: '100%', md: 224 } }}>
+    {/* <FormControl sx={{ width: { xs: '100%', md: 224 } }}>
       <OutlinedInput
         size="small"
         id="header-search"
@@ -23,7 +24,7 @@ const Search = () => (
         }}
         placeholder="Ctrl + K"
       />
-    </FormControl>
+    </FormControl> */}
   </Box>
 );
 

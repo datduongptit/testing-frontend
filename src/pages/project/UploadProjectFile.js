@@ -23,7 +23,7 @@ const UploadProjectFile = ({ files, handleChangeFiles, type, projectFiles }) => 
         //     handleClickOpen();
         //   }}
       >
-        <label htmlFor={'button-upload' + type}>Upload testing plan</label>
+        <label htmlFor={'button-upload' + type}>{type === 'PROJECT_REQUIRE' ? 'Upload project requirement' : 'Upload testing plan'}</label>
         <input id={'button-upload' + type} type="file" hidden={true} onChange={(e) => handleChangeFiles(type, e.target.files[0])} />
       </Button>
       <div style={{ marginTop: '1rem' }}>{files[type]?.name}</div>

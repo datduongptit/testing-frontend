@@ -28,6 +28,24 @@ const dashboard = {
       type: 'item',
       url: '/project',
       icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+      childs: [
+        {
+          id: 'project',
+          title: 'Project detail',
+          type: 'collapse',
+          url: '/project',
+          icon: icons.DashboardOutlined,
+          breadcrumbs: false
+        }
+      ]
+    },
+    {
+      id: 'account',
+      title: 'Testing task',
+      type: 'item',
+      url: '/testing-task',
+      icon: icons.UserOutlined,
       breadcrumbs: false
     },
     {
