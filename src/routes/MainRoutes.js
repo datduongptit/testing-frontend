@@ -9,6 +9,7 @@ import Project from 'pages/project/index';
 import ProjectDetails from 'pages/project/ProjectDetails';
 import ListReport from 'pages/report/ListReport';
 import FileDetails from 'pages/report/FileDetails';
+import Histories from 'pages/histories/Histories';
 // import ReportDetails from 'pages/report/ReportDetails';
 
 // render - dashboard
@@ -93,6 +94,10 @@ const MainRoutes = {
     {
       path: 'file-details/:id',
       element: <FileDetails />
+    },
+    {
+      path: 'history',
+      element: <Histories />
     }
   ]
 };

@@ -63,6 +63,14 @@ const dashboard = {
       url: '/report',
       icon: icons.UserOutlined,
       breadcrumbs: false
+    },
+    {
+      id: 'history',
+      title: 'History',
+      type: 'item',
+      url: '/history',
+      icon: icons.UserOutlined,
+      breadcrumbs: false
     }
   ]
 };

@@ -182,6 +182,7 @@ const ProjectForm = ({ type }) => {
                   console.log(values);
                   values.usersAssigned = JSON.stringify(personName);
                   values.userReport = userReport;
+                  values.status = status;
                   values.userReview = userReview;
                   handleCreateProject(values);
                   setStatus({ success: false });

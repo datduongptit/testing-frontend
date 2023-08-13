@@ -17,6 +17,7 @@ import ListReport from 'pages/report/ListReport';
 import matchUser from 'utils/matchUser';
 import ProjectForm from './ProjectForm';
 import ListFuntion from 'pages/report/ListFunction';
+import ProjectWidget from './ProjectWidget';
 
 const ProjectDetails = () => {
   const { pathname } = useLocation();
@@ -67,6 +68,9 @@ const ProjectDetails = () => {
   ];
 
   const getProjectConfig = (type) => projectStatusConfig.find((item) => item.type === type);
+
+  // Caculate testcase
+  const files = project?.files;
 
   useEffect(() => {
     getListUsers();
@@ -124,6 +128,9 @@ const ProjectDetails = () => {
               </MainCard>
             </Grid>
           )}
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            {files && <ProjectWidget files={files} />}
+          </Grid>
 
           {type === 'project' ? (
             <>
