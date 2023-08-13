@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
+import moment from 'moment';
 import { useLocation, Link } from 'react-router-dom';
-import { Grid, Typography, Breadcrumbs, Button } from '@mui/material';
+import { Grid, Typography, Breadcrumbs, Chip } from '@mui/material';
 import MainCard from 'components/MainCard';
 import ProjectService from 'services/project.service';
 import { dispatch } from 'store/index';
@@ -59,6 +60,13 @@ const ProjectDetails = () => {
       console.log(error);
     }
   };
+  const projectStatusConfig = [
+    { type: 'PLANNING', text: 'Planning', color: 'primary' },
+    { type: 'OPEN', text: 'Open', color: 'success' },
+    { type: 'CLOSE', text: 'Close', color: 'warning' }
+  ];
+
+  const getProjectConfig = (type) => projectStatusConfig.find((item) => item.type === type);
 
   useEffect(() => {
     getListUsers();
@@ -76,7 +84,10 @@ const ProjectDetails = () => {
                 <Typography color="text.primary">{type === 'project' ? 'Project' : 'Report'} details</Typography>
               </Breadcrumbs>
             </div>
-            <Typography variant="h5">Project details</Typography>
+            <Typography variant="h5">
+              Project status:{' '}
+              <Chip label={getProjectConfig(project?.status)?.type} color={getProjectConfig(project?.status)?.color || 'info'} />
+            </Typography>
           </Grid>
           <Grid item xs={12} sm={12} md={12} lg={12}>
             <MainCard className="project-card-detail">
@@ -101,6 +112,12 @@ const ProjectDetails = () => {
               <Typography variant="h6" gutterBottom>
                 Project remind: <a href={getLinkFile('PROJECT_REQUIRE')}>{getFileName('PROJECT_REQUIRE')}</a>
               </Typography>
+              <Typography variant="h6" gutterBottom>
+                Start date: {project?.startedAt ? moment(project?.startedAt).format('DD-MM-YYYY') : ''}
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Done date: {project?.endAt ? moment(project?.endAt).format('DD-MM-YYYY') : ''}
+              </Typography>
             </MainCard>
           </Grid>
           {type === 'project' ? (
@@ -108,10 +125,6 @@ const ProjectDetails = () => {
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <ListUsersAssign project={project} />
               </Grid>
-
-              {/* <Grid item xs={12} sm={12} md={12} lg={12}>
-                <PlanRemind project={project} type="PLAN_REMIND" index={6} />
-              </Grid> */}
 
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <ListReport project={project} />
