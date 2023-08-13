@@ -84,42 +84,47 @@ const ProjectDetails = () => {
                 <Typography color="text.primary">{type === 'project' ? 'Project' : 'Report'} details</Typography>
               </Breadcrumbs>
             </div>
-            <Typography variant="h5">
-              Project status:{' '}
-              <Chip label={getProjectConfig(project?.status)?.type} color={getProjectConfig(project?.status)?.color || 'info'} />
-            </Typography>
+            {type === 'project' && (
+              <Typography variant="h5">
+                Project status:{' '}
+                <Chip label={getProjectConfig(project?.status)?.type} color={getProjectConfig(project?.status)?.color || 'info'} />
+              </Typography>
+            )}
           </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            <MainCard className="project-card-detail">
-              <div className="project-edit">
-                <ProjectForm type="edit" />
-              </div>
-              <Typography variant="h6" gutterBottom>
-                Project name: {project?.name}
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Project manager: {project?.manager}
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Customer: {project?.customer}
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                User report: {matchUser(listUsers, project.userReport)}
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Project plan: <a href={getLinkFile('PROJECT_PLAN')}>{getFileName('PROJECT_PLAN')}</a>
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Project remind: <a href={getLinkFile('PROJECT_REQUIRE')}>{getFileName('PROJECT_REQUIRE')}</a>
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Start date: {project?.startedAt ? moment(project?.startedAt).format('DD-MM-YYYY') : ''}
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                Done date: {project?.endAt ? moment(project?.endAt).format('DD-MM-YYYY') : ''}
-              </Typography>
-            </MainCard>
-          </Grid>
+          {type === 'project' && (
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              <MainCard className="project-card-detail">
+                <div className="project-edit">
+                  <ProjectForm type="edit" />
+                </div>
+                <Typography variant="h6" gutterBottom>
+                  Project name: {project?.name}
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Project manager: {project?.manager}
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Customer: {project?.customer}
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  User report: {matchUser(listUsers, project.userReport)}
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Project plan: <a href={getLinkFile('PROJECT_PLAN')}>{getFileName('PROJECT_PLAN')}</a>
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Project remind: <a href={getLinkFile('PROJECT_REQUIRE')}>{getFileName('PROJECT_REQUIRE')}</a>
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Start date: {project?.startedAt ? moment(project?.startedAt).format('DD-MM-YYYY') : ''}
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  Done date: {project?.endAt ? moment(project?.endAt).format('DD-MM-YYYY') : ''}
+                </Typography>
+              </MainCard>
+            </Grid>
+          )}
+
           {type === 'project' ? (
             <>
               <Grid item xs={12} sm={12} md={12} lg={12}>

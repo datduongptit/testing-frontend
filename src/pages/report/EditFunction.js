@@ -56,7 +56,7 @@ const UpdateFunction = ({ type, fileId, func, reportFiles }) => {
     const functionsArray = JSON.parse(file.functions);
     return functionsArray.some((funct) => funct.id === func.id);
   });
-  const functionsList = JSON.parse(filteredFiles?.functions);
+  const functionsList = filteredFiles?.functions ? JSON.parse(filteredFiles?.functions) : [];
   const [functions, setFunctions] = useState(func || []);
 
   const handleUpdateFuntions = async (values) => {
@@ -67,7 +67,6 @@ const UpdateFunction = ({ type, fileId, func, reportFiles }) => {
       functionsList.push(values); // Add the new object to the array
     }
     const res = await FileService.updateFunctions(fileId, functionsList);
-    console.log(res);
   };
 
   const formConfig = [
