@@ -74,8 +74,8 @@ const ProjectForm = ({ type }) => {
     name: project?.name,
     manager: project?.manager,
     customer: project?.customer,
-    startedAt: moment(project?.startedAt).format('YYYY-MM-DD'),
-    endAt: moment(project?.endAt).format('YYYY-MM-DD')
+    startedAt: project?.startedAt ? moment(project?.startedAt).format('YYYY-MM-DD') : '',
+    endAt: project?.endAt ? moment(project?.endAt).format('YYYY-MM-DD') : ''
   };
 
   const [status, setStatus] = useState(project?.status || 'PLANNING');
@@ -91,8 +91,6 @@ const ProjectForm = ({ type }) => {
           // userReport: ''
         }
       : editFormProject;
-
-  console.log(initialValues);
 
   const projectFiles = project?.files?.filter((file) => file.fileType === 'PROJECT_PLAN' || file.fileType === 'PROJECT_REQUIRE');
 

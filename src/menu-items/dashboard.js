@@ -40,14 +40,14 @@ const dashboard = {
         }
       ]
     },
-    {
-      id: 'account',
-      title: 'Testing task',
-      type: 'item',
-      url: '/testing-task',
-      icon: icons.UserOutlined,
-      breadcrumbs: false
-    },
+    // {
+    //   id: 'account',
+    //   title: 'Testing task',
+    //   type: 'item',
+    //   url: '/testing-task',
+    //   icon: icons.UserOutlined,
+    //   breadcrumbs: false
+    // },
     {
       id: 'account',
       title: 'Account',

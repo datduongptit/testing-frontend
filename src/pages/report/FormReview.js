@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
+import moment from 'moment';
 
 // material-ui
 import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack, Modal, Box, Select, Chip, MenuItem } from '@mui/material';
@@ -38,7 +39,6 @@ function getStyles(name, personName, theme) {
 }
 
 const FormReview = ({ type, fileId, func, reportFiles, listFuntion }) => {
-  console.log(listFuntion);
   const {
     users: { listUsers: users },
     auth: { user },
@@ -49,49 +49,36 @@ const FormReview = ({ type, fileId, func, reportFiles, listFuntion }) => {
   const handleClose = () => setOpen(false);
   const theme = useTheme();
   const initialState = {
-    excuter: '',
-    passed: '0',
-    failed: []
+    caseName: '',
+    priority: 'low',
+    type: 'function',
+    createDate: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+    timeDone: ''
   };
 
-  const [excute, setExcute] = useState(
-    listFuntion && JSON.stringify(listFuntion) !== '[]'
-      ? listFuntion
-      : {
-          excuter: '',
-          passed: '0',
-          failed: []
-        }
-  );
+  const [review, setReview] = useState(listFuntion && JSON.stringify(listFuntion) !== '[]' ? listFuntion : []);
   const addFailedCase = () => {
-    const failedCase = [...excute.failed];
-    failedCase.push({ caseName: '', devAssign: '', errorCode: '', time: '', timeDone: '' });
-    setExcute({ ...excute, failed: [...failedCase] });
+    const failedCase = [...review];
+    failedCase.push({
+      caseName: '',
+      priority: 'low',
+      type: 'function',
+      createDate: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+      timeDone: ''
+    });
+    setReview([...failedCase]);
   };
 
-  const handleChangeExcute = (key, value) => {
-    setExcute({ ...excute, [key]: value });
+  const handleChangeReviewCase = (index, key, value) => {
+    const reviewList = [...review];
+    reviewList[index][key] = value;
+    reviewList[index].id = fileId;
+    setReview([...reviewList]);
   };
 
-  const [personName, setPersonName] = React.useState('');
-
-  const handleChangeExcuteFailed = (index, key, value) => {
-    const failedList = [...excute.failed];
-    failedList[index][key] = value;
-    failedList[index].id = fileId;
-    setExcute({ ...excute, failed: failedList });
-  };
-  const convertIdToUsername = (id) => users.filter((user) => user.id === id)[0].username;
-
-  const handleUpdateFuntions = async (values) => {
-    // const index = functionsList.findIndex((item) => item.name === func.name);
-    // if (index !== -1) {
-    //   functionsList[index] = values; // Update the existing object
-    // } else {
-    //   functionsList.push(values); // Add the new object to the array
-    // }
-    const res = await FileService.updateFunctions(fileId, excute);
-    console.log(res);
+  const handleUpdateFuntions = async () => {
+    await FileService.updateFunctions(fileId, review);
+    window.location.reload();
   };
 
   return (
@@ -114,8 +101,7 @@ const FormReview = ({ type, fileId, func, reportFiles, listFuntion }) => {
               validationSchema={Yup.object().shape({})}
               onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                 try {
-                  //   handleCreateProject(values);
-                  handleUpdateFuntions(values);
+                  handleUpdateFuntions();
                   setStatus({ success: false });
                   setSubmitting(false);
                   handleClose();
@@ -136,9 +122,9 @@ const FormReview = ({ type, fileId, func, reportFiles, listFuntion }) => {
                         Add review case
                       </Button>
                     </Grid>
-                    {excute.failed?.map((item, index) => (
+                    {review?.map((item, index) => (
                       <>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Stack spacing={1}>
                             <InputLabel htmlFor={`manager-project-casename-${index}`}>Name</InputLabel>
                             <OutlinedInput
@@ -146,52 +132,51 @@ const FormReview = ({ type, fileId, func, reportFiles, listFuntion }) => {
                               type="text"
                               value={item.caseName}
                               onBlur={handleBlur}
-                              onChange={(e) => handleChangeExcuteFailed(index, 'caseName', e.target.value)}
-                              placeholder="Enter name of test case"
+                              onChange={(e) => handleChangeReviewCase(index, 'caseName', e.target.value)}
+                              placeholder="Enter name of review case"
                               fullWidth
                             />
                           </Stack>
                         </Grid>
                         <Grid item xs={6}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor={`manager-project-testcase-${2}`}>Dev assign</InputLabel>
-                            <OutlinedInput
-                              id={`manager-project-testcase-${2}`}
-                              type="text"
-                              value={item.devAssign}
-                              onBlur={handleBlur}
-                              onChange={(e) => handleChangeExcuteFailed(index, 'devAssign', e.target.value)}
-                              placeholder="Enter number of test case"
-                              fullWidth
-                            />
+                            <InputLabel htmlFor="usersAssigned-project">Priority</InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label-priority"
+                              id="demo-simple-select-priority"
+                              value={item.priority}
+                              onChange={(e) => handleChangeReviewCase(index, 'priority', e.target.value)}
+                            >
+                              {[
+                                { label: 'High', value: 'hight' },
+                                { label: 'Medium', value: 'medium' },
+                                { label: 'Low', value: 'low' }
+                              ].map((item, index) => (
+                                <MenuItem key={index} value={item.value} style={getStyles(item?.label, [], theme)}>
+                                  {item?.label}
+                                </MenuItem>
+                              ))}
+                            </Select>
                           </Stack>
                         </Grid>
                         <Grid item xs={6}>
                           <Stack spacing={1}>
-                            <InputLabel htmlFor={`manager-project-testcase-${2}`}>Code error</InputLabel>
-                            <OutlinedInput
-                              id={`manager-project-testcase-${2}`}
-                              type="text"
-                              value={item.errorCode}
-                              onBlur={handleBlur}
-                              onChange={(e) => handleChangeExcuteFailed(index, 'errorCode', e.target.value)}
-                              placeholder="Enter number of test case"
-                              fullWidth
-                            />
-                          </Stack>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Stack spacing={1}>
-                            <InputLabel htmlFor={`manager-project-testcase-${2}`}>Time</InputLabel>
-                            <OutlinedInput
-                              id={`manager-project-testcase-${2}`}
-                              type="date"
-                              value={item.time}
-                              onBlur={handleBlur}
-                              onChange={(e) => handleChangeExcuteFailed(index, 'time', e.target.value)}
-                              placeholder="Enter number of test case"
-                              fullWidth
-                            />
+                            <InputLabel htmlFor="usersAssigned-project">Type</InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label-priority"
+                              id="demo-simple-select-priority"
+                              value={item.type}
+                              onChange={(e) => handleChangeReviewCase(index, 'type', e.target.value)}
+                            >
+                              {[
+                                { label: 'Function', value: 'function' },
+                                { label: 'UI', value: 'ui' }
+                              ].map((item, index) => (
+                                <MenuItem key={index} value={item.value} style={getStyles(item?.label, [], theme)}>
+                                  {item?.label}
+                                </MenuItem>
+                              ))}
+                            </Select>
                           </Stack>
                         </Grid>
                         <Grid item xs={6}>
@@ -202,8 +187,8 @@ const FormReview = ({ type, fileId, func, reportFiles, listFuntion }) => {
                               type="date"
                               value={item.timeDone}
                               onBlur={handleBlur}
-                              onChange={(e) => handleChangeExcuteFailed(index, 'timeDone', e.target.value)}
-                              placeholder="Enter number of test case"
+                              onChange={(e) => handleChangeReviewCase(index, 'timeDone', e.target.value)}
+                              // placeholder="Enter number of test case"
                               fullWidth
                             />
                           </Stack>

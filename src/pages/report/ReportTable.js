@@ -1,6 +1,19 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { TableContainer, Stack, Table, TableRow, Paper, TableCell, TableHead, TableBody, IconButton, Typography } from '@mui/material';
+import {
+  TableContainer,
+  Stack,
+  Table,
+  TableRow,
+  Paper,
+  TableCell,
+  TableHead,
+  TableBody,
+  IconButton,
+  Typography,
+  Button
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 // import DeleteModal from 'components/modal/DeleteModal';
 import PropTypes from 'prop-types';
 // import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,6 +32,7 @@ import FormExcute from './FormExcute';
 import FormReview from './FormReview';
 
 const ReportTable = ({ project, type }) => {
+  const navigate = useNavigate();
   const {
     users: { listUsers },
     auth: { user }
@@ -37,9 +51,7 @@ const ReportTable = ({ project, type }) => {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
         <Typography variant="h5">List file</Typography>
-        {/* <AddNewAccount /> */}
         <UploadFile project={project} type={type} />
-        {/* <UploadReportModal /> */}
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -74,6 +86,15 @@ const ReportTable = ({ project, type }) => {
                       )}
                       {type === 'EXCUTE_TEST' && <FormExcute type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />}
                       {type === 'TEST_REVIEW' && <FormReview type={type} fileId={file.id} listFuntion={JSON.parse(file?.functions)} />}
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          // getAccountInfo(project?.id);
+                          navigate(`/file-details/${file.id}`);
+                        }}
+                      >
+                        View
+                      </Button>
                     </Stack>
                   </TableCell>
                 </TableRow>

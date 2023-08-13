@@ -49,7 +49,6 @@ const UploadReportModal = ({ type, fileId, listFunction }) => {
     customer: ''
     // userReport: ''
   };
-  console.log(listFunction);
   const [functions, setFunctions] = useState(listFunction || []);
 
   const addFunction = () =>

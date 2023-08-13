@@ -9,6 +9,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import './css/custom.css';
+import { dispatch } from 'store/index';
+import { setListUsers } from 'store/reducers/users';
+import UserService from 'services/user.service';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 
@@ -28,6 +31,18 @@ const App = () => {
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   if (!user) navigate('/login');
+  const getListUsers = async () => {
+    try {
+      const response = await UserService.getAllUsers();
+      dispatch(setListUsers({ data: response.data?.result }));
+    } catch (error) {
+      console.log('error');
+    }
+  };
+
+  useEffect(() => {
+    getListUsers();
+  }, []);
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => setExplode(false)} resetKeys={[explode]}>

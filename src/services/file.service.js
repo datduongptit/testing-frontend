@@ -25,6 +25,14 @@ const uploadFile = (file, project, type) => {
   }
 };
 
+const getFileById = (id) => {
+  try {
+    return axios.get(API_URL + `${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const updateFile = (file, fileId, project, type) => {
   try {
     const formData = new FormData();
@@ -65,6 +73,7 @@ const FileService = {
   uploadFile,
   updateFile,
   updateFunctions,
+  getFileById,
   deleteFileById
 };
 

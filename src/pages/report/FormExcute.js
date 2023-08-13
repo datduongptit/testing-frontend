@@ -38,7 +38,6 @@ function getStyles(name, personName, theme) {
 }
 
 const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
-  console.log(listFuntion);
   const {
     users: { listUsers: users },
     auth: { user },
@@ -51,6 +50,7 @@ const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
   const initialState = {
     excuter: '',
     passed: '0',
+    passedCase: [],
     failed: []
   };
 
@@ -60,13 +60,18 @@ const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
       : {
           excuter: '',
           passed: '0',
+          passedCase: [],
           failed: []
         }
   );
-  const addFailedCase = () => {
-    const failedCase = [...excute.failed];
-    failedCase.push({ caseName: '', devAssign: '', errorCode: '', time: '', timeDone: '' });
-    setExcute({ ...excute, failed: [...failedCase] });
+  const addFailedCase = (type) => {
+    const failedCase = [...excute[type]];
+    if (type === 'failed') {
+      failedCase.push({ caseName: '', devAssign: '', errorCode: '', time: '', timeDone: '' });
+    } else {
+      failedCase.push({ caseName: '', excuter: '', timeCreated: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss') });
+    }
+    setExcute({ ...excute, [type]: [...failedCase] });
   };
 
   const handleChangeExcute = (key, value) => {
@@ -75,23 +80,17 @@ const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
 
   const [personName, setPersonName] = React.useState('');
 
-  const handleChangeExcuteFailed = (index, key, value) => {
-    const failedList = [...excute.failed];
+  const handleChangeExcuteFailed = (index, key, value, type) => {
+    const failedList = [...excute[type]];
     failedList[index][key] = value;
     failedList[index].id = fileId;
-    setExcute({ ...excute, failed: failedList });
+    setExcute({ ...excute, [type]: failedList });
   };
   const convertIdToUsername = (id) => users.filter((user) => user.id === id)[0].username;
 
   const handleUpdateFuntions = async (values) => {
-    // const index = functionsList.findIndex((item) => item.name === func.name);
-    // if (index !== -1) {
-    //   functionsList[index] = values; // Update the existing object
-    // } else {
-    //   functionsList.push(values); // Add the new object to the array
-    // }
-    const res = await FileService.updateFunctions(fileId, excute);
-    console.log(res);
+    await FileService.updateFunctions(fileId, excute);
+    window.location.reload();
   };
 
   return (
@@ -131,57 +130,75 @@ const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
                 <form noValidate onSubmit={handleSubmit}>
                   <Grid container spacing={3}>
                     {/*  */}
-                    <Grid item xs={6}>
-                      <Stack spacing={1}>
-                        <InputLabel htmlFor="usersAssigned-project">Excute user</InputLabel>
-                        <Select
-                          labelId="demo-multiple-chip-label"
-                          id="demo-multiple-chip"
-                          value={excute.excuter}
-                          onChange={(e) => handleChangeExcute('excuter', e.target.value)}
-                          input={<OutlinedInput id="select-multiple-chip" label="List users" />}
-                          renderValue={() => (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                              <Chip key={excute.excuter} label={convertIdToUsername(excute.excuter)} />
-                            </Box>
-                          )}
-                          MenuProps={MenuProps}
-                        >
-                          {users.map((user, index) => (
-                            <MenuItem key={index} value={user?.id} style={getStyles(user?.username, personName, theme)}>
-                              {user?.username}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {touched.usersAssigned && errors.usersAssigned && (
-                          <FormHelperText error id="standard-weight-helper-text-project-usersAssigned">
-                            {errors.usersAssigned}
-                          </FormHelperText>
-                        )}
-                      </Stack>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Stack spacing={1}>
-                        <InputLabel htmlFor={`manager-project-testcase-${2}`}>Passed case</InputLabel>
-                        <OutlinedInput
-                          id={`manager-project-testcase-${2}`}
-                          type="number"
-                          value={excute.passed}
-                          onBlur={handleBlur}
-                          onChange={(e) => handleChangeExcute('passed', e.target.value)}
-                          placeholder="Enter number of test case"
-                          fullWidth
-                        />
-                      </Stack>
+
+                    <Grid item xs={12}>
+                      <Button
+                        variant="contained"
+                        startIcon={type === 'create' ? <AddCircleIcon /> : <EditIcon />}
+                        onClick={() => addFailedCase('passedCase')}
+                      >
+                        Add passed case
+                      </Button>
+                      {excute.passedCase?.map((item, index) => (
+                        <Grid container spacing={3} key={index}>
+                          <Grid item xs={6}>
+                            <Stack spacing={1}>
+                              <InputLabel htmlFor={`manager-project-casename-${index}-passed`}>Name</InputLabel>
+                              <OutlinedInput
+                                id={`manager-project-casename-${index}-passed`}
+                                type="text"
+                                value={item.caseName}
+                                onBlur={handleBlur}
+                                onChange={(e) => handleChangeExcuteFailed(index, 'caseName', e.target.value, 'passedCase')}
+                                placeholder="Enter name of test case"
+                                fullWidth
+                              />
+                            </Stack>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Stack spacing={1}>
+                              <InputLabel htmlFor="usersAssigned-project">Excute user</InputLabel>
+                              <Select
+                                labelId="demo-multiple-chip-label"
+                                id="demo-multiple-chip"
+                                value={item.excuter}
+                                onChange={(e) => handleChangeExcuteFailed(index, 'excuter', e.target.value, 'passedCase')}
+                                input={<OutlinedInput id="select-multiple-chip" label="List users" />}
+                                renderValue={() => (
+                                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                    <Chip key={item.excuter} label={convertIdToUsername(item.excuter)} />
+                                  </Box>
+                                )}
+                                MenuProps={MenuProps}
+                              >
+                                {users.map((user, index) => (
+                                  <MenuItem key={index} value={user?.id} style={getStyles(user?.username, personName, theme)}>
+                                    {user?.username}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {touched.usersAssigned && errors.usersAssigned && (
+                                <FormHelperText error id="standard-weight-helper-text-project-usersAssigned">
+                                  {errors.usersAssigned}
+                                </FormHelperText>
+                              )}
+                            </Stack>
+                          </Grid>
+                        </Grid>
+                      ))}
                     </Grid>
                     <Grid item xs={12}>
-                      <Button variant="contained" startIcon={type === 'create' ? <AddCircleIcon /> : <EditIcon />} onClick={addFailedCase}>
+                      <Button
+                        variant="contained"
+                        startIcon={type === 'create' ? <AddCircleIcon /> : <EditIcon />}
+                        onClick={() => addFailedCase('failed')}
+                      >
                         Add failed case
                       </Button>
                     </Grid>
                     {excute.failed?.map((item, index) => (
                       <>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Stack spacing={1}>
                             <InputLabel htmlFor={`manager-project-casename-${index}`}>Name</InputLabel>
                             <OutlinedInput
@@ -197,13 +214,42 @@ const FormExcute = ({ type, fileId, func, reportFiles, listFuntion }) => {
                         </Grid>
                         <Grid item xs={6}>
                           <Stack spacing={1}>
+                            <InputLabel htmlFor="usersAssigned-project">Excuter</InputLabel>
+                            <Select
+                              labelId="demo-multiple-chip-label"
+                              id="demo-multiple-chip"
+                              value={item.excuter}
+                              onChange={(e) => handleChangeExcuteFailed(index, 'excuter', e.target.value, 'failed')}
+                              input={<OutlinedInput id="select-multiple-chip" label="List users" />}
+                              renderValue={() => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                  <Chip key={item.excuter} label={convertIdToUsername(item.excuter)} />
+                                </Box>
+                              )}
+                              MenuProps={MenuProps}
+                            >
+                              {users.map((user, index) => (
+                                <MenuItem key={index} value={user?.id} style={getStyles(user?.username, personName, theme)}>
+                                  {user?.username}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {touched.usersAssigned && errors.usersAssigned && (
+                              <FormHelperText error id="standard-weight-helper-text-project-usersAssigned">
+                                {errors.usersAssigned}
+                              </FormHelperText>
+                            )}
+                          </Stack>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Stack spacing={1}>
                             <InputLabel htmlFor={`manager-project-testcase-${2}`}>Dev assign</InputLabel>
                             <OutlinedInput
                               id={`manager-project-testcase-${2}`}
                               type="text"
                               value={item.devAssign}
                               onBlur={handleBlur}
-                              onChange={(e) => handleChangeExcuteFailed(index, 'devAssign', e.target.value)}
+                              onChange={(e) => handleChangeExcuteFailed(index, 'devAssign', e.target.value, 'failed')}
                               placeholder="Enter number of test case"
                               fullWidth
                             />

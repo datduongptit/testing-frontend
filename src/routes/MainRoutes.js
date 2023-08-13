@@ -8,6 +8,7 @@ import AccountDetail from 'pages/account/AccountDetail';
 import Project from 'pages/project/index';
 import ProjectDetails from 'pages/project/ProjectDetails';
 import ListReport from 'pages/report/ListReport';
+import FileDetails from 'pages/report/FileDetails';
 // import ReportDetails from 'pages/report/ReportDetails';
 
 // render - dashboard
@@ -88,6 +89,10 @@ const MainRoutes = {
     {
       path: 'testing-task',
       element: <ListReport />
+    },
+    {
+      path: 'file-details/:id',
+      element: <FileDetails />
     }
   ]
 };
