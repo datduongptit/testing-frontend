@@ -153,7 +153,7 @@ const DashboardDefault = () => {
         <Grid item xs={12} md={12} lg={12}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
-              <Typography variant="h5">Income Overview</Typography>
+              <Typography variant="h5">Bug chart by project</Typography>
             </Grid>
             <Grid item />
           </Grid>
@@ -161,9 +161,9 @@ const DashboardDefault = () => {
             <Box sx={{ p: 3, pb: 0 }}>
               <Stack spacing={2}>
                 <Typography variant="h6" color="textSecondary">
-                  This Week Statistics
+                  Total Bugs
                 </Typography>
-                <Typography variant="h3">$7,650</Typography>
+                <Typography variant="h3">{projectInfo?.totalBugs}</Typography>
               </Stack>
             </Box>
             <MonthlyBarChart projects={listProjects} />

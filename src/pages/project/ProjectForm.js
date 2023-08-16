@@ -21,6 +21,7 @@ import { updateCurrentProject, updateProject } from 'store/reducers/projects';
 import { dispatch } from 'store/index';
 import UploadProjectFile from './UploadProjectFile';
 import FileService from 'services/file.service';
+import HistoriesService from 'services/histories.service';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -124,8 +125,10 @@ const ProjectForm = ({ type }) => {
         dataResponse.usersAssigned = JSON.parse(dataResponse.usersAssigned);
         if (type === 'create') {
           dispatch(updateProject({ data: dataResponse }));
+          await HistoriesService.logHistory('CREATE', 'PROJECT', `Project ${data.name} created`);
         } else {
           dispatch(updateCurrentProject({ data: dataResponse }));
+          await HistoriesService.logHistory('UPDATE', 'PROJECT', `Project ${data.name} updated`);
         }
         await handleUploadFiles(dataResponse);
         setLoading(false);

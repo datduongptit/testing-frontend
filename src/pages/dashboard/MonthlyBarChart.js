@@ -27,7 +27,7 @@ const barChartOptions = {
     enabled: false
   },
   xaxis: {
-    categories: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+    categories: [],
     axisBorder: {
       show: false
     },
@@ -51,11 +51,13 @@ const MonthlyBarChart = ({ projects }) => {
   const { primary, secondary } = theme.palette.text;
   const info = theme.palette.info.light;
 
-  const [series] = useState([
+  const [series, setSeries] = useState([
     {
       data: [80, 95, 70, 42, 65, 55, 78]
     }
   ]);
+
+  let totalBugProjects = [];
 
   if (projects && projects.length > 0) {
     projects.forEach((project) => {
@@ -69,18 +71,24 @@ const MonthlyBarChart = ({ projects }) => {
           const functions = JSON.parse(file.functions);
           if (Array.isArray(functions)) {
             functions.forEach((func) => {
-              console.log(123, func);
-              totalBugCount += func.totalBug || 0;
+              totalBugCount += parseInt(func.totalBug || 0);
             });
           }
         }
       });
 
-      console.log(`Tổng số totalBug cho dự án ${project.name}: ${totalBugCount}`);
+      totalBugProjects.push({ name: project.name, totalBugCount });
+
+      // console.log(`Tổng số totalBug cho dự án ${project.name}: ${totalBugCount}`);
     });
   } else {
     console.log('Không có dữ liệu dự án.');
   }
+
+  totalBugProjects = totalBugProjects.sort((a, b) => b.totalBugCount - a.totalBugCount).slice(0, 10);
+  const seriesData = totalBugProjects.map((item) => item.totalBugCount);
+  const label = totalBugProjects.map((item) => item.name);
+  barChartOptions.xaxis.categories = label;
 
   const [options, setOptions] = useState(barChartOptions);
 
@@ -103,9 +111,12 @@ const MonthlyBarChart = ({ projects }) => {
   }, [primary, info, secondary]);
 
   return (
-    <div id="chart">
-      <ReactApexChart options={options} series={series} type="bar" height={365} />
-    </div>
+    projects &&
+    projects.length && (
+      <div id="chart">
+        <ReactApexChart options={options} series={[{ data: seriesData }]} type="bar" height={365} />
+      </div>
+    )
   );
 };
 

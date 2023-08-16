@@ -27,6 +27,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import _debounce from 'lodash/debounce';
+import HistoriesService from 'services/histories.service';
 
 const ListProjects = ({ userId, type }) => {
   const navigate = useNavigate();
@@ -60,6 +61,7 @@ const ListProjects = ({ userId, type }) => {
       const response = await ProjectService.deleteProjectById(id);
       if (response?.data?.result?.affected) {
         dispatch(deleteProject(id));
+        await HistoriesService.logHistory('DELETE', 'PROJECT', `Project deleted`);
       }
     } catch (error) {
       console.log(error);
@@ -127,7 +129,7 @@ const ListProjects = ({ userId, type }) => {
                       >
                         View
                       </Button>
-                      <DeleteModal deleteAction={handleDeleteProject} id={project?.projectId} />
+                      <DeleteModal deleteAction={handleDeleteProject} id={project?.projectId} projectName={project.name} />
                     </Stack>
                   </TableCell>
                 </TableRow>
