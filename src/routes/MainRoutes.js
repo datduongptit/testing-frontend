@@ -10,6 +10,7 @@ import ProjectDetails from 'pages/project/ProjectDetails';
 import ListReport from 'pages/report/ListReport';
 import FileDetails from 'pages/report/FileDetails';
 import Histories from 'pages/histories/Histories';
+import ListUsersAssign from 'pages/project/ListUsersAssign';
 // import ReportDetails from 'pages/report/ReportDetails';
 
 // render - dashboard
@@ -70,6 +71,14 @@ const MainRoutes = {
     {
       path: 'project/:id',
       element: <ProjectDetails />
+    },
+    {
+      path: 'project/:id/testers',
+      element: <ListUsersAssign />
+    },
+    {
+      path: 'project/:id/files',
+      element: <ListReport />
     },
     {
       path: 'account',

@@ -1,16 +1,22 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TableContainer, Stack, Typography, Table, TableRow, Paper, TableCell, TableHead, TableBody, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddUserAssign from './AddUserAssign';
 import { useSelector } from 'react-redux';
 import { dispatch } from 'store/index';
-import { deteteUsersAssigned } from 'store/reducers/projects';
+import { deteteUsersAssigned, setCurrentProject } from 'store/reducers/projects';
 import ProjectService from 'services/project.service';
+import { useLocation } from 'react-router';
+import BackButton from 'components/BackButton';
 // import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
-const ListUsersAssign = ({ project }) => {
+const ListUsersAssign = () => {
+  const { pathname } = useLocation();
+  const projectId = pathname.split('/')[2];
+
+  const { currentProject: project } = useSelector((state) => state.projects);
   const usersAssigned = project?.usersAssigned;
   const {
     users: { listUsers },
@@ -20,6 +26,21 @@ const ListUsersAssign = ({ project }) => {
 
   const role = user?.role;
 
+  const getProjectById = async () => {
+    try {
+      const res = await ProjectService.getProjectById(projectId);
+      if (res) {
+        const projectResult = res.data.result;
+        let usersAssigned = projectResult?.usersAssigned;
+        usersAssigned = typeof usersAssigned === 'string' ? JSON.parse(usersAssigned) : usersAssigned;
+        projectResult.usersAssigned = usersAssigned;
+        dispatch(setCurrentProject({ data: projectResult }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleDeleteUserAssigned = async (id) => {
     const res = await ProjectService.deleteProjectUserAssigned({ data: currentProject, id });
     if (res) {
@@ -27,8 +48,15 @@ const ListUsersAssign = ({ project }) => {
     }
   };
 
+  useEffect(() => {
+    getProjectById();
+  }, [projectId]);
+
   return (
     <div>
+      <div>
+        <BackButton />
+      </div>
       <div style={{ marginBottom: '1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h5">Tester assigned</Typography>
         {listUsers && usersAssigned && <AddUserAssign listUsers={listUsers} usersAssigned={usersAssigned} />}

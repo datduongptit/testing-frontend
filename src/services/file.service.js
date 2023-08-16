@@ -33,6 +33,14 @@ const getFileById = (id) => {
   }
 };
 
+const getTotalBug = () => {
+  try {
+    return axios.get(API_URL + `total-bugs`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const updateFile = (file, fileId, project, type) => {
   try {
     const formData = new FormData();
@@ -74,7 +82,8 @@ const FileService = {
   updateFile,
   updateFunctions,
   getFileById,
-  deleteFileById
+  deleteFileById,
+  getTotalBug
 };
 
 export default FileService;

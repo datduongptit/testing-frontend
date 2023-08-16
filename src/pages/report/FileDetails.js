@@ -9,6 +9,7 @@ import matchUser from 'utils/matchUser';
 import TestcaseDetails from './file-details/TestcaseDetails';
 import TestReviewDetails from './file-details/TestReviewDetails';
 import ExcuteDetails from './file-details/ExcuteDetails';
+import BackButton from 'components/BackButton';
 
 const FileDetails = () => {
   const { pathname } = useLocation();
@@ -35,9 +36,7 @@ const FileDetails = () => {
     file &&
     listUsers && (
       <>
-        <Button variant="text" onClick={() => navigate(-1)}>
-          Back
-        </Button>
+        <BackButton />
         <Typography variant="h5">File details</Typography>
         <Grid container rowSpacing={4.5} columnSpacing={2.75}>
           <Grid item xs={12} sm={12} md={12} lg={12}>

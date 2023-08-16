@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -6,6 +6,12 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { reportConfig } from './reportConfig';
 import ReportTable from './ReportTable';
+import { useSelector } from 'react-redux';
+import ProjectService from 'services/project.service';
+import { setCurrentProject } from 'store/reducers/projects';
+import { dispatch } from 'store/index';
+import { useLocation } from 'react-router';
+import BackButton from 'components/BackButton';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -35,34 +41,65 @@ function a11yProps(index) {
   };
 }
 
-const ListReport = ({ project }) => {
+const ListReport = () => {
+  const { pathname } = useLocation();
+  const projectId = pathname.split('/')[2];
+  const { currentProject: project } = useSelector((state) => state.projects);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const getProjectById = async () => {
+    try {
+      const res = await ProjectService.getProjectById(projectId);
+      if (res) {
+        const projectResult = res.data.result;
+        let usersAssigned = projectResult?.usersAssigned;
+        usersAssigned = typeof usersAssigned === 'string' ? JSON.parse(usersAssigned) : usersAssigned;
+        projectResult.usersAssigned = usersAssigned;
+        dispatch(setCurrentProject({ data: projectResult }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProjectById();
+  }, [projectId]);
+
   return (
-    <div className="project-list-report">
-      <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 500 }}>
-        <Tabs
-          orientation="vertical"
-          variant="scrollable"
-          value={value}
-          onChange={handleChange}
-          aria-label="Vertical tabs example"
-          sx={{ borderRight: 1, borderColor: 'divider' }}
-        >
+    project && (
+      <div className="project-list-report">
+        <div>
+          <BackButton />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <Typography variant="h5">List report</Typography>
+        </div>
+        <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 500 }}>
+          <Tabs
+            orientation="vertical"
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            aria-label="Vertical tabs example"
+            sx={{ borderRight: 1, borderColor: 'divider' }}
+          >
+            {reportConfig.map((item, index) => (
+              <Tab key={index} label={item.title} {...a11yProps(index)} />
+            ))}
+          </Tabs>
           {reportConfig.map((item, index) => (
-            <Tab key={index} label={item.title} {...a11yProps(index)} />
+            <TabPanel key={index} value={value} index={index}>
+              <ReportTable project={project} type={item.type} index={index} />
+            </TabPanel>
           ))}
-        </Tabs>
-        {reportConfig.map((item, index) => (
-          <TabPanel key={index} value={value} index={index}>
-            <ReportTable project={project} type={item.type} index={index} />
-          </TabPanel>
-        ))}
-      </Box>
-    </div>
+        </Box>
+      </div>
+    )
   );
 };
 

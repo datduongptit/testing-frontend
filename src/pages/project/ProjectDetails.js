@@ -119,29 +119,17 @@ const ProjectDetails = () => {
                 <Typography variant="h6" gutterBottom>
                   Project remind: <a href={getLinkFile('PROJECT_REQUIRE')}>{getFileName('PROJECT_REQUIRE')}</a>
                 </Typography>
-                <Typography variant="h6" gutterBottom>
-                  Start date: {project?.startedAt ? moment(project?.startedAt).format('DD-MM-YYYY') : ''}
-                </Typography>
-                <Typography variant="h6" gutterBottom>
-                  Done date: {project?.endAt ? moment(project?.endAt).format('DD-MM-YYYY') : ''}
-                </Typography>
               </MainCard>
             </Grid>
           )}
-          <Grid item xs={12} sm={12} md={12} lg={12}>
-            {files && <ProjectWidget files={files} />}
-          </Grid>
+          {type === 'project' && (
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              {files && <ProjectWidget files={files} project={project} />}
+            </Grid>
+          )}
 
           {type === 'project' ? (
-            <>
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <ListUsersAssign project={project} />
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={12} lg={12}>
-                <ListReport project={project} />
-              </Grid>
-            </>
+            <></>
           ) : (
             <>
               <Grid item xs={12} sm={12} md={12} lg={12}>
